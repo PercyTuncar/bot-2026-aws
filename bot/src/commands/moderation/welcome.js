@@ -11,7 +11,7 @@ export async function welcomeCommand(sock, msg, context) {
       welcome: { ...(group?.welcome || {}), enabled: true, ...(text ? { text } : {}) },
     });
     await sock.sendMessage(remoteJid, {
-      text: `✅ *Bienvenida activada.*\nVariables disponibles: {{mention}}, {{count}}, {{group}}\n\nTexto actual:\n${group?.welcome?.text || 'Bienvenido/a al grupo, @{{mention}}! 🎉 Ahora somos {{count}} miembros.'}`,
+      text: `✅ *Bienvenida activada.*\n\nTexto actual:\n${group?.welcome?.text || 'Bienvenido/a al grupo, @{{mention}}! 🎉 Ahora somos {{count}} miembros.'}`,
     }, { quoted: msg });
   } else if (sub === 'off') {
     await upsertGroup(groupJid, { welcome: { ...(group?.welcome || {}), enabled: false } });
@@ -35,7 +35,7 @@ export async function welcomeCommand(sock, msg, context) {
   } else {
     const enabled = group?.welcome?.enabled ? '🟢 Activo' : '🔴 Inactivo';
     await sock.sendMessage(remoteJid, {
-      text: `👋 *Configuración de Bienvenida*\n\nEstado: ${enabled}\n\nComandos:\n• *!welcome on [texto]*\n• *!welcome off*\n• *!welcome text [nuevo texto]*\n• *!welcome image [url]*\n\nVariables: {{mention}}, {{count}}, {{group}}`,
+      text: `👋 *Configuración de Bienvenida*\n\nEstado: ${enabled}`,
     }, { quoted: msg });
   }
 }

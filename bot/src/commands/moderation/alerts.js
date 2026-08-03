@@ -34,7 +34,7 @@ export async function alertsCommand(sock, msg, context) {
     } else {
       const state = group?.alertsActive ? '🟢 Activo' : '🔴 Inactivo';
       await enqueueMessage(remoteJid, {
-        text: `⏰ *Sistema de Alertas*\n\nEstado: ${state}\n\nComandos:\n• *!alerts on* — Activar/refrescar\n• *!alerts off* — Pausar todas\n• *!alerts update* — Refrescar del panel\n• *!alerts list* — Ver configuradas`,
+        text: `⏰ *Sistema de Alertas*\n\nEstado: ${state}`,
       }, { quoted: msg }, 1);
     }
   } catch (err) {

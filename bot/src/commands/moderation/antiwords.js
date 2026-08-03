@@ -9,7 +9,7 @@ export async function antiwordsCommand(sock, msg, context) {
 
     if (sub === 'on') {
       await upsertGroup(groupJid, { antiwords: { ...(group?.antiwords || {}), enabled: true } });
-      await enqueueMessage(remoteJid, { text: '✅ *Antipalabras activado.*\nLos mensajes con palabras prohibidas serán eliminados.' }, { quoted: msg }, 1);
+      await enqueueMessage(remoteJid, { text: '✅ *Antipalabras activado.*\nLos mensajes con palabras prohibidas serán eliminados automáticamente.' }, { quoted: msg }, 1);
     } else if (sub === 'off') {
       await upsertGroup(groupJid, { antiwords: { ...(group?.antiwords || {}), enabled: false } });
       await enqueueMessage(remoteJid, { text: '🔴 *Antipalabras desactivado.*' }, { quoted: msg }, 1);
@@ -32,7 +32,7 @@ export async function antiwordsCommand(sock, msg, context) {
       const enabled = group?.antiwords?.enabled ? '🟢 Activo' : '🔴 Inactivo';
       const words = (group?.antiwords?.words || []).join(', ') || 'Ninguna';
       await enqueueMessage(remoteJid, {
-        text: `🚫 *Configuración de Antipalabras*\n\nEstado: ${enabled}\nPalabras prohibidas: ${words}\n\nComandos:\n• *!antiwords on/off*\n• *!antiwords add palabra1, palabra2*\n• *!antiwords remove palabra1*`,
+        text: `🚫 *Configuración de Antipalabras*\n\nEstado: ${enabled}\nPalabras prohibidas: ${words}`,
       }, { quoted: msg }, 1);
     }
   } catch (err) {
