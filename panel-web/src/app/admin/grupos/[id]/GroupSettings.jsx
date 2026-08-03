@@ -3,9 +3,26 @@
 import { useState } from 'react';
 
 export default function GroupSettings({ group, groupId, onUpdate }) {
-  const [antilink, setAntilink] = useState(group?.antilink || { enabled: false, allowedDomains: [] });
-  const [antiwords, setAntiwords] = useState(group?.antiwords || { enabled: false, words: [] });
-  const [welcome, setWelcome] = useState(group?.welcome || { enabled: false, text: '', imageUrl: '' });
+  // Asegurar valores por defecto seguros
+  const initialAntilink = {
+    enabled: group?.antilink?.enabled || false,
+    allowedDomains: Array.isArray(group?.antilink?.allowedDomains) ? group.antilink.allowedDomains : []
+  };
+
+  const initialAntiwords = {
+    enabled: group?.antiwords?.enabled || false,
+    words: Array.isArray(group?.antiwords?.words) ? group.antiwords.words : []
+  };
+
+  const initialWelcome = {
+    enabled: group?.welcome?.enabled || false,
+    text: group?.welcome?.text || '',
+    imageUrl: group?.welcome?.imageUrl || ''
+  };
+
+  const [antilink, setAntilink] = useState(initialAntilink);
+  const [antiwords, setAntiwords] = useState(initialAntiwords);
+  const [welcome, setWelcome] = useState(initialWelcome);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
 
