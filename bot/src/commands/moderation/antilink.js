@@ -9,7 +9,7 @@ export async function antilinkCommand(sock, msg, context) {
 
     if (sub === 'on') {
       await upsertGroup(groupJid, { antilink: { ...(group?.antilink || {}), enabled: true } });
-      await enqueueMessage(remoteJid, { text: '✅ *Antilink activado.*\nLos mensajes con links serán eliminados.\nUsa *!antilink add [dominio]* para añadir dominios permitidos.' }, { quoted: msg }, 1);
+      await enqueueMessage(remoteJid, { text: '✅ *Antilink activado.*\nLos mensajes con links serán eliminados automáticamente.' }, { quoted: msg }, 1);
     } else if (sub === 'off') {
       await upsertGroup(groupJid, { antilink: { ...(group?.antilink || {}), enabled: false } });
       await enqueueMessage(remoteJid, { text: '🔴 *Antilink desactivado.*' }, { quoted: msg }, 1);
