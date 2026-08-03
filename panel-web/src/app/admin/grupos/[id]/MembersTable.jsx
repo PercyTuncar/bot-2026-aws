@@ -1,43 +1,134 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { formatCoins } from '@/lib/helpers.js';
 import { formatBirthdayFromTimestamp } from '@/lib/birthdayHelpers.js';
 
 export default function MembersTable({ members, groupId }) {
   const [search, setSearch] = useState('');
   const [editTarget, setEditTarget] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState('messageCount'); // messageCount, level, cash, warnings
+  const [sortOrder, setSortOrder] = useState('desc'); // asc, desc
+  const itemsPerPage = 20;
 
-  const filtered = members.filter((m) => {
-    const name = (m.pushName || '').toLowerCase();
-    const jid = (m.jid || m.id || '').toLowerCase();
-    const q = search.toLowerCase();
-    return name.includes(q) || jid.includes(q);
-  });
+  // Filtrar miembros
+  const filtered = useMemo(() => {
+    return members.filter((m) => {
+      const name = (m.pushName || '').toLowerCase();
+      const jid = (m.jid || m.id || '').toLowerCase();
+      const q = search.toLowerCase();
+      return name.includes(q) || jid.includes(q);
+    });
+  }, [members, search]);
+
+  // Ordenar miembros
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      let aVal = a[sortBy] || 0;
+      let bVal = b[sortBy] || 0;
+
+      // Caso especial para warnings (es un array)
+      if (sortBy === 'warnings') {
+        aVal = (a.warnings || []).length;
+        bVal = (b.warnings || []).length;
+      }
+
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+  }, [filtered, sortBy, sortOrder]);
+
+  // Paginación
+  const totalPages = Math.ceil(sorted.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedMembers = sorted.slice(startIndex, endIndex);
+
+  // Cambiar página
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // Resetear página al filtrar
+  const handleSearchChange = (value) => {
+    setSearch(value);
+    setCurrentPage(1);
+  };
+
+  // Cambiar ordenamiento
+  const handleSort = (field) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortBy(field);
+      setSortOrder('desc');
+    }
+  };
 
   return (
     <div>
-      <input
-        placeholder="Buscar por nombre o JID..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: 16 }}
-      />
+      {/* Controles */}
+      <div style={{ marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <input
+          placeholder="Buscar por nombre o JID..."
+          value={search}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          style={{ flex: 1, minWidth: 200 }}
+        />
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          style={{ padding: '8px 12px', borderRadius: 6, border: '1px solid #333', background: '#1a1a1a', color: '#fff' }}
+        >
+          <option value="messageCount">Mensajes</option>
+          <option value="level">Nivel</option>
+          <option value="cash">Efectivo</option>
+          <option value="warnings">Advertencias</option>
+        </select>
+        <button
+          onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+          className="btn-secondary"
+          style={{ padding: '8px 12px', fontSize: 13 }}
+        >
+          {sortOrder === 'desc' ? '↓ Mayor a menor' : '↑ Menor a mayor'}
+        </button>
+      </div>
+
+      {/* Info */}
+      <div style={{ marginBottom: 12, fontSize: 13, color: '#888' }}>
+        Mostrando {startIndex + 1}-{Math.min(endIndex, sorted.length)} de {sorted.length} miembros
+      </div>
+
+      {/* Tabla */}
       <div style={{ overflowX: 'auto' }}>
         <table>
           <thead>
             <tr>
               <th>Usuario</th>
-              <th>Nivel</th>
-              <th>Mensajes</th>
-              <th>Efectivo</th>
+              <th style={{ cursor: 'pointer' }} onClick={() => handleSort('level')}>
+                Nivel {sortBy === 'level' && (sortOrder === 'desc' ? '↓' : '↑')}
+              </th>
+              <th style={{ cursor: 'pointer' }} onClick={() => handleSort('messageCount')}>
+                Mensajes {sortBy === 'messageCount' && (sortOrder === 'desc' ? '↓' : '↑')}
+              </th>
+              <th style={{ cursor: 'pointer' }} onClick={() => handleSort('cash')}>
+                Efectivo {sortBy === 'cash' && (sortOrder === 'desc' ? '↓' : '↑')}
+              </th>
               <th>Banco</th>
-              <th>Advertencias</th>
+              <th style={{ cursor: 'pointer' }} onClick={() => handleSort('warnings')}>
+                Advertencias {sortBy === 'warnings' && (sortOrder === 'desc' ? '↓' : '↑')}
+              </th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((m) => (
+            {paginatedMembers.map((m) => (
               <tr key={m.id}>
                 <td>
                   <div style={{ fontWeight: 600, fontSize: 14 }}>{m.pushName || 'Sin nombre'}</div>
@@ -69,10 +160,57 @@ export default function MembersTable({ members, groupId }) {
             ))}
           </tbody>
         </table>
-        {filtered.length === 0 && (
+        {paginatedMembers.length === 0 && (
           <div style={{ textAlign: 'center', color: '#888', padding: 24 }}>No se encontraron miembros.</div>
         )}
       </div>
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="btn-secondary"
+            style={{ padding: '6px 12px', fontSize: 13 }}
+          >
+            ← Anterior
+          </button>
+          <div style={{ display: 'flex', gap: 4 }}>
+            {[...Array(totalPages)].map((_, i) => {
+              const page = i + 1;
+              // Mostrar solo páginas cercanas
+              if (
+                page === 1 ||
+                page === totalPages ||
+                (page >= currentPage - 2 && page <= currentPage + 2)
+              ) {
+                return (
+                  <button
+                    key={page}
+                    onClick={() => goToPage(page)}
+                    className={currentPage === page ? 'btn-primary' : 'btn-secondary'}
+                    style={{ padding: '6px 12px', fontSize: 13, minWidth: 36 }}
+                  >
+                    {page}
+                  </button>
+                );
+              } else if (page === currentPage - 3 || page === currentPage + 3) {
+                return <span key={page} style={{ padding: '6px', color: '#666' }}>...</span>;
+              }
+              return null;
+            })}
+          </div>
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="btn-secondary"
+            style={{ padding: '6px 12px', fontSize: 13 }}
+          >
+            Siguiente →
+          </button>
+        </div>
+      )}
 
       {editTarget && (
         <MemberEditModal
