@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { formatCoins } from '@/lib/helpers.js';
+import { formatBirthdayFromTimestamp } from '@/lib/birthdayHelpers.js';
 
 export default function MembersTable({ members, groupId }) {
   const [search, setSearch] = useState('');
@@ -90,7 +91,7 @@ export default function MembersTable({ members, groupId }) {
 function MemberEditModal({ member, groupId, onClose }) {
   const [cash, setCash] = useState(member.cash || 0);
   const [bank, setBank] = useState(member.bank || 0);
-  const [birthday, setBirthday] = useState(member.birthday || '');
+  const [birthday, setBirthday] = useState(formatBirthdayFromTimestamp(member.birthday) || '');
   const [warnings, setWarnings] = useState(member.warnings || []);
   const [newWarningReason, setNewWarningReason] = useState('');
   const [loading, setLoading] = useState(false);

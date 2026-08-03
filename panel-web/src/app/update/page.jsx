@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { formatBirthdayFromTimestamp } from '@/lib/birthdayHelpers.js';
 
 function formatCoins(amount) {
   return `${(amount || 0).toLocaleString('es-PE')} RC`;
@@ -29,8 +30,10 @@ export default function UpdatePage() {
       if (!res.ok) throw new Error(data.error || 'Error al buscar');
       setResults(data.results || []);
       if (data.results?.length === 1) {
-        setSelected(data.results[0]);
-        setBirthday(data.results[0].birthday || '');
+        const result = data.results[0];
+        setSelected(result);
+        // Convertir Timestamp a formato DD/MM/AAAA para mostrarlo
+        setBirthday(formatBirthdayFromTimestamp(result.birthday) || '');
       }
     } catch (err) {
       setError(err.message);
@@ -115,8 +118,7 @@ export default function UpdatePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          groupId: selected.groupId,
-          memberId: selected.memberId,
+          jid: selected.jid,
           birthday: birthdayTrimmed,
         }),
       });
@@ -190,7 +192,7 @@ export default function UpdatePage() {
                 key={i}
                 onClick={() => {
                   setSelected(r);
-                  setBirthday(r.birthday || '');
+                  setBirthday(formatBirthdayFromTimestamp(r.birthday) || '');
                 }}
                 className="btn-secondary"
                 style={{ textAlign: 'left', padding: 12 }}
@@ -243,7 +245,9 @@ export default function UpdatePage() {
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: '#25d366', marginBottom: 8 }}>
                   Tu fecha de nacimiento ya está configurada
                 </h3>
-                <div style={{ fontSize: 24, fontWeight: 800 }}>{selected.birthday}</div>
+                <div style={{ fontSize: 24, fontWeight: 800 }}>
+                  {formatBirthdayFromTimestamp(selected.birthday)}
+                </div>
               </div>
               <div style={{ padding: 16, background: '#111', borderRadius: 6, marginBottom: 16 }}>
                 <p style={{ fontSize: 13, color: '#888', lineHeight: 1.6, margin: 0 }}>
