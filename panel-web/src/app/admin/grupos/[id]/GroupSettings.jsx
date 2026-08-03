@@ -160,7 +160,9 @@ export default function GroupSettings({ group, groupId, onUpdate }) {
             <span style={{ fontSize: 13 }}>Activado</span>
           </label>
         </div>
-        <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 4 }}>Texto (usa {{'{'}mention{'}'}} para mencionar):</label>
+        <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 4 }}>
+          Texto (usa {'{{mention}}'} para mencionar):
+        </label>
         <textarea
           value={welcome.text}
           onChange={(e) => setWelcome({ ...welcome, text: e.target.value })}
