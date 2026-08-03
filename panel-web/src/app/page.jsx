@@ -16,11 +16,6 @@ export default function HomePage() {
           <div style={{ fontWeight: 600, marginBottom: 4 }}>Mi Perfil</div>
           <div style={{ color: '#888', fontSize: 13 }}>Actualiza tu cumpleaños y datos</div>
         </a>
-        <a href="/admin" className="card" style={{ padding: '20px 32px', display: 'block' }}>
-          <div style={{ fontSize: 28, marginBottom: 8 }}>⚙️</div>
-          <div style={{ fontWeight: 600, marginBottom: 4 }}>Administración</div>
-          <div style={{ color: '#888', fontSize: 13 }}>Panel de control del bot</div>
-        </a>
       </div>
     </main>
   );
