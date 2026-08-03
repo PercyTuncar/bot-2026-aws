@@ -20,12 +20,9 @@ export async function meCommand(sock, msg, context) {
     return;
   }
 
-  // Asegurar que el miembro tiene un token de perfil
-  let token = member.profileToken;
-  if (!token) {
-    token = generateToken(senderJid);
-    await upsertMember(groupJid, senderJid, { profileToken: token });
-  }
+  // Extraer el LID (número de identificación)
+  const userLid = senderJid.split('@')[0]; // Obtiene "51999999999:12" o similar
+  const lidNumber = userLid.split(':')[0]; // Obtiene solo "51999999999"
 
   const globalProfile = await getGlobalProfile(senderJid);
   const { level, progress, required, isMax } = getLevelProgress(member);
@@ -33,9 +30,6 @@ export async function meCommand(sock, msg, context) {
   const hasShield = (member.inventory || []).some(
     (i) => i.itemId === 'shield' && i.active && i.expiresAt > Date.now()
   );
-
-  const panelUrl = process.env.PANEL_WEB_URL || 'http://localhost:3000';
-  const profileLink = `${panelUrl}/update?token=${token}`;
 
   const text = buildProfileMessage({
     pushName: member.pushName || 'Sin nombre',
@@ -49,7 +43,7 @@ export async function meCommand(sock, msg, context) {
     warnings,
     hasShield,
     birthday: globalProfile?.birthday,
-    profileLink,
+    lidNumber, // Pasar el LID en lugar del profileLink
   });
 
   await enqueueMessage(remoteJid, { text }, { quoted: msg }, 1);

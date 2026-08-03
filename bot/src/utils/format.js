@@ -86,7 +86,7 @@ export const cooldownMsg = (remaining) =>
 /**
  * Construye la respuesta de perfil (!me).
  */
-export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, hasShield, birthday, profileLink }) {
+export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, hasShield, birthday, lidNumber }) {
   const lines = [
     `${section('👤', 'Tu Perfil en este Grupo')}\n`,
     bullet('Nombre', pushName || 'Sin nombre'),
@@ -99,7 +99,10 @@ export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, 
   ];
   if (hasShield) lines.push(`🛡️ Escudo activo`);
   if (birthday) lines.push(bullet('Cumpleaños', birthday));
-  lines.push(`\n🔗 ${bold('Tu perfil web:')}\n${profileLink}`);
+  if (lidNumber) {
+    lines.push(`\n${bullet('Tu ID', lidNumber)}`);
+    lines.push(`\n_Usa ${bold('!id')} para actualizar tu perfil web_`);
+  }
   return lines.join('\n');
 }
 

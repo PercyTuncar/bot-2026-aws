@@ -63,9 +63,9 @@ export default function UpdatePage() {
         <div style={{ fontSize: 48, marginBottom: 12 }}>👤</div>
         <h1 style={{ fontSize: 28, fontWeight: 800 }}>Actualizar mi Perfil</h1>
         <p style={{ color: '#888', marginTop: 8, lineHeight: 1.5 }}>
-          Ingresa tu número de WhatsApp para encontrar tu perfil y actualizarlo.<br />
+          Ingresa tu Número de Identificación para actualizar tu perfil.<br />
           <span style={{ color: '#25d366', fontSize: 13 }}>
-            💡 Tip: Usa el enlace de <strong>!me</strong> en WhatsApp para acceso directo y más seguro.
+            💡 Tip: Usa el comando <strong>!id</strong> en el grupo de WhatsApp para obtener tu ID.
           </span>
         </p>
       </div>
@@ -73,7 +73,7 @@ export default function UpdatePage() {
       <div className="card" style={{ marginBottom: 20 }}>
         <form onSubmit={handleSearch}>
           <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 8 }}>
-            Número de WhatsApp (con código de país, ej: 51999999999)
+            Número de Identificación (ejemplo: 51999999999)
           </label>
           <div style={{ display: 'flex', gap: 10 }}>
             <input
@@ -97,8 +97,10 @@ export default function UpdatePage() {
 
       {results && results.length === 0 && (
         <div className="card" style={{ textAlign: 'center', color: '#888' }}>
-          <p>No se encontró ningún usuario con ese número.</p>
-          <p style={{ marginTop: 8, fontSize: 13 }}>Asegúrate de haber enviado al menos un mensaje en un grupo donde el bot esté activo.</p>
+          <p>No se encontró ningún usuario con ese ID.</p>
+          <p style={{ marginTop: 8, fontSize: 13 }}>
+            Usa <strong>!id</strong> en el grupo de WhatsApp para obtener tu Número de Identificación.
+          </p>
         </div>
       )}
 
@@ -153,7 +155,7 @@ export default function UpdatePage() {
         <p style={{ color: '#888', fontSize: 13, lineHeight: 1.6 }}>
           El tipo de cambio es <strong>1 sol = 1,000 RC</strong>.<br />
           Transfiere via Plin al número <strong>{process.env.NEXT_PUBLIC_PLIN_NUMBER || 'configurar en .env'}</strong>,
-          luego usa el comando <strong>!me</strong> en WhatsApp para obtener tu enlace de perfil y subir el comprobante.
+          luego usa el comando <strong>!id</strong> en WhatsApp para obtener tu ID y actualizar tu perfil con el comprobante.
         </p>
       </div>
     </main>

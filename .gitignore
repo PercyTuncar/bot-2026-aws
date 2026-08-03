@@ -29,3 +29,8 @@ Thumbs.db
 
 # PM2
 .pm2/
+
+# Private keys and sensitive files
+*.pem
+*.key
+GUIA_EC2.md
