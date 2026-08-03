@@ -6,6 +6,7 @@ import { groupsCommand } from '../commands/utility/groups.js';
 import { stickerCommand } from '../commands/utility/sticker.js';
 import { meCommand } from '../commands/utility/me.js';
 import { idCommand } from '../commands/utility/id.js';
+import { helpCommand } from '../commands/utility/help.js';
 import { instaCommand } from '../commands/utility/insta.js';
 import { vvCommand } from '../commands/utility/vv.js';
 import { warnCommand } from '../commands/moderation/warn.js';
@@ -60,6 +61,7 @@ const commands = [
   { name: 'sticker', aliases: ['s'], category: 'utility', permission: 'all', handler: stickerCommand },
   { name: 'me', aliases: [], category: 'utility', permission: 'all', handler: meCommand },
   { name: 'id', aliases: [], category: 'utility', permission: 'all', handler: idCommand },
+  { name: 'help', aliases: ['ayuda', 'comandos'], category: 'utility', permission: 'all', handler: helpCommand },
   { name: 'insta', aliases: [], category: 'utility', permission: 'bought', shopItemId: 'insta', handler: instaCommand },
   { name: 'vv', aliases: [], category: 'utility', permission: 'bought', shopItemId: 'vv', handler: vvCommand },
 
