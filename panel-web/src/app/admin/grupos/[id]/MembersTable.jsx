@@ -90,6 +90,7 @@ export default function MembersTable({ members, groupId }) {
 function MemberEditModal({ member, groupId, onClose }) {
   const [cash, setCash] = useState(member.cash || 0);
   const [bank, setBank] = useState(member.bank || 0);
+  const [birthday, setBirthday] = useState(member.birthday || '');
   const [warnings, setWarnings] = useState(member.warnings || []);
   const [newWarningReason, setNewWarningReason] = useState('');
   const [loading, setLoading] = useState(false);
@@ -107,6 +108,7 @@ function MemberEditModal({ member, groupId, onClose }) {
           memberId: member.id,
           cash: Number(cash),
           bank: Number(bank),
+          birthday: birthday || null,
           warnings
         }),
       });
@@ -180,6 +182,25 @@ function MemberEditModal({ member, groupId, onClose }) {
             <div>Nivel: <span style={{ color: '#fff' }}>{member.level || 1}</span></div>
             <div>XP: <span style={{ color: '#fff' }}>{member.xp || 0}</span></div>
             <div>Mensajes: <span style={{ color: '#fff' }}>{(member.messageCount || 0).toLocaleString()}</span></div>
+          </div>
+        </div>
+
+        {/* Cumpleaños */}
+        <div style={{ marginBottom: 20 }}>
+          <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
+            🎂 Cumpleaños {member.birthday ? <span className="badge badge-green" style={{ marginLeft: 8, fontSize: 11 }}>Configurado</span> : <span className="badge" style={{ marginLeft: 8, fontSize: 11 }}>No configurado</span>}
+          </h4>
+          <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 4 }}>Fecha de cumpleaños (DD/MM):</label>
+          <input
+            type="text"
+            placeholder="25/12"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
+            maxLength={5}
+            style={{ marginBottom: 4 }}
+          />
+          <div style={{ fontSize: 11, color: '#666' }}>
+            Formato: DD/MM (ejemplo: 25/12 para 25 de diciembre)
           </div>
         </div>
 

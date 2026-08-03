@@ -2,6 +2,10 @@
 
 import { useState } from 'react';
 
+function formatCoins(amount) {
+  return `${(amount || 0).toLocaleString('es-PE')} RC`;
+}
+
 export default function UpdatePage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState(null);
@@ -37,19 +41,24 @@ export default function UpdatePage() {
 
   async function handleSave(e) {
     e.preventDefault();
-    if (!selected) return;
     setSaving(true);
-    setError('');
     setMessage('');
+    setError('');
     try {
       const res = await fetch('/api/users/update-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jid: selected.jid, groupId: selected.groupId, birthday }),
+        body: JSON.stringify({
+          groupId: selected.groupId,
+          memberId: selected.memberId,
+          birthday: birthday.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al guardar');
       setMessage('✅ ¡Perfil actualizado correctamente!');
+      // Actualizar el selected para reflejar el nuevo cumpleaños
+      setSelected({ ...selected, birthday: birthday.trim() });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -89,13 +98,13 @@ export default function UpdatePage() {
         </form>
       </div>
 
-      {error && (
-        <div style={{ background: '#3a1a1a', border: '1px solid #e74c3c', borderRadius: 8, padding: '12px 16px', marginBottom: 16, color: '#e74c3c', fontSize: 14 }}>
+      {error && results?.length === 0 && (
+        <div className="card" style={{ textAlign: 'center', color: '#e74c3c' }}>
           {error}
         </div>
       )}
 
-      {results && results.length === 0 && (
+      {results && results.length === 0 && !error && (
         <div className="card" style={{ textAlign: 'center', color: '#888' }}>
           <p>No se encontró ningún usuario con ese ID.</p>
           <p style={{ marginTop: 8, fontSize: 13 }}>
@@ -104,48 +113,120 @@ export default function UpdatePage() {
         </div>
       )}
 
-      {results && results.length > 1 && !selected && (
+      {results && results.length > 1 && (
         <div className="card">
-          <p style={{ marginBottom: 12, fontSize: 14, color: '#888' }}>Se encontraron múltiples perfiles. Selecciona el correcto:</p>
-          {results.map((r) => (
-            <button
-              key={`${r.groupId}-${r.memberId}`}
-              className="btn-secondary"
-              style={{ display: 'block', width: '100%', marginBottom: 8, textAlign: 'left', padding: '10px 14px' }}
-              onClick={() => { setSelected(r); setBirthday(r.birthday || ''); }}
-            >
-              <strong>{r.pushName || 'Sin nombre'}</strong> · Grupo: {r.groupName || r.groupId}
-            </button>
-          ))}
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>
+            Selecciona tu grupo:
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {results.map((r, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setSelected(r);
+                  setBirthday(r.birthday || '');
+                }}
+                className="btn-secondary"
+                style={{ textAlign: 'left', padding: 12 }}
+              >
+                <div style={{ fontWeight: 600 }}>{r.groupName || 'Grupo sin nombre'}</div>
+                <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+                  Nivel {r.level || 1} • {(r.messageCount || 0).toLocaleString('es-PE')} mensajes
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       {selected && (
         <div className="card">
-          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>
-            {selected.pushName || 'Usuario'}
+          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>
+            👤 {selected.pushName || 'Usuario'}
           </h2>
-          <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>
-            Grupo: {selected.groupName || selected.groupId} · Nivel {selected.level || 1}
-          </p>
+          <div style={{ marginBottom: 20, padding: 16, background: '#111', borderRadius: 8, border: '1px solid #2a2a2a' }}>
+            <div style={{ display: 'grid', gap: 10, fontSize: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#888' }}>Grupo:</span>
+                <span style={{ fontWeight: 600 }}>{selected.groupName || 'Sin nombre'}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#888' }}>Nivel:</span>
+                <span className="badge badge-green">{selected.level || 1}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#888' }}>Mensajes:</span>
+                <span style={{ fontWeight: 600 }}>{(selected.messageCount || 0).toLocaleString('es-PE')}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#888' }}>Efectivo:</span>
+                <span style={{ fontWeight: 600, color: '#25d366' }}>{formatCoins(selected.cash)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#888' }}>Banco:</span>
+                <span style={{ fontWeight: 600, color: '#25d366' }}>{formatCoins(selected.bank)}</span>
+              </div>
+            </div>
+          </div>
 
-          <form onSubmit={handleSave}>
-            <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 8 }}>
-              Fecha de cumpleaños
-            </label>
-            <input
-              type="date"
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
-              style={{ marginBottom: 16 }}
-            />
-            <button type="submit" className="btn-primary" disabled={saving} style={{ width: '100%' }}>
-              {saving ? 'Guardando...' : 'Guardar cambios'}
-            </button>
-          </form>
+          {selected.birthday ? (
+            // Si ya tiene cumpleaños configurado, mostrar solo lectura
+            <div style={{ padding: 20, background: '#1a2a1a', borderRadius: 8, border: '1px solid #25d366' }}>
+              <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>🎂</div>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#25d366', marginBottom: 8 }}>
+                  Tu cumpleaños ya está configurado
+                </h3>
+                <div style={{ fontSize: 24, fontWeight: 800 }}>{selected.birthday}</div>
+              </div>
+              <div style={{ padding: 16, background: '#111', borderRadius: 6, marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: '#888', lineHeight: 1.6, margin: 0 }}>
+                  ✅ Tu fecha de cumpleaños ha sido guardada exitosamente y no puede ser modificada.
+                  Si necesitas cambiarla, contacta a un administrador del grupo.
+                </p>
+              </div>
+              <div style={{ textAlign: 'center', padding: 16, background: '#0a1a0a', borderRadius: 6 }}>
+                <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+                  🎉 ¡Gracias por ser parte del grupo!<br />
+                  <span style={{ color: '#25d366', fontWeight: 600 }}>Sigue participando y ganando RCoins</span>
+                </p>
+              </div>
+            </div>
+          ) : (
+            // Si no tiene cumpleaños, permitir configurarlo
+            <form onSubmit={handleSave}>
+              <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 8 }}>
+                🎂 Configura tu cumpleaños (DD/MM)
+              </label>
+              <input
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+                placeholder="25/12"
+                maxLength={5}
+                required
+                style={{ marginBottom: 8 }}
+              />
+              <div style={{ fontSize: 11, color: '#666', marginBottom: 16 }}>
+                Formato: DD/MM (ejemplo: 25/12 para 25 de diciembre).<br />
+                ⚠️ <strong>Una vez guardado, no podrás modificarlo.</strong>
+              </div>
+              {error && (
+                <div style={{ marginBottom: 12, color: '#e74c3c', fontSize: 13 }}>{error}</div>
+              )}
+              <button type="submit" className="btn-primary" disabled={saving} style={{ width: '100%' }}>
+                {saving ? 'Guardando...' : 'Guardar cumpleaños'}
+              </button>
+            </form>
+          )}
 
           {message && (
-            <div style={{ marginTop: 16, color: '#25d366', fontSize: 14 }}>{message}</div>
+            <div style={{ marginTop: 16, padding: 16, background: '#1a2a1a', borderRadius: 8, border: '1px solid #25d366', textAlign: 'center' }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
+              <p style={{ color: '#25d366', fontSize: 14, fontWeight: 600, margin: 0 }}>{message}</p>
+              <p style={{ color: '#888', fontSize: 13, marginTop: 8 }}>
+                ¡Sigue chateando en el grupo para ganar más RCoins!
+              </p>
+            </div>
           )}
         </div>
       )}
