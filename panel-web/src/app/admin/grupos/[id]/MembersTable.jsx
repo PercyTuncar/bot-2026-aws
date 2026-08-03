@@ -188,19 +188,23 @@ function MemberEditModal({ member, groupId, onClose }) {
         {/* Cumpleaños */}
         <div style={{ marginBottom: 20 }}>
           <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
-            🎂 Cumpleaños {member.birthday ? <span className="badge badge-green" style={{ marginLeft: 8, fontSize: 11 }}>Configurado</span> : <span className="badge" style={{ marginLeft: 8, fontSize: 11 }}>No configurado</span>}
+            🎂 Fecha de Nacimiento {member.birthday ? <span className="badge badge-green" style={{ marginLeft: 8, fontSize: 11 }}>Configurado</span> : <span className="badge" style={{ marginLeft: 8, fontSize: 11 }}>No configurado</span>}
           </h4>
-          <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 4 }}>Fecha de cumpleaños (DD/MM):</label>
+          <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 4 }}>Fecha de nacimiento (DD/MM/AAAA):</label>
           <input
             type="text"
-            placeholder="25/12"
+            placeholder="25/12/1990"
             value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
-            maxLength={5}
+            onChange={(e) => {
+              // Solo permitir números y /
+              const value = e.target.value.replace(/[^\d/]/g, '');
+              setBirthday(value);
+            }}
+            maxLength={10}
             style={{ marginBottom: 4 }}
           />
           <div style={{ fontSize: 11, color: '#666' }}>
-            Formato: DD/MM (ejemplo: 25/12 para 25 de diciembre)
+            Formato: DD/MM/AAAA (ejemplo: 25/12/1990)
           </div>
         </div>
 

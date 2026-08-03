@@ -44,6 +44,72 @@ export default function UpdatePage() {
     setSaving(true);
     setMessage('');
     setError('');
+
+    // Validar formato de fecha
+    const birthdayTrimmed = birthday.trim();
+    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = birthdayTrimmed.match(datePattern);
+
+    if (!match) {
+      setError('❌ Formato inválido. Use DD/MM/AAAA (ejemplo: 25/12/1990)');
+      setSaving(false);
+      return;
+    }
+
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+
+    // Validar rangos básicos
+    if (month < 1 || month > 12) {
+      setError('❌ El mes debe estar entre 01 y 12');
+      setSaving(false);
+      return;
+    }
+
+    if (day < 1 || day > 31) {
+      setError('❌ El día debe estar entre 01 y 31');
+      setSaving(false);
+      return;
+    }
+
+    const currentYear = new Date().getFullYear();
+    if (year < 1900 || year > currentYear) {
+      setError(`❌ El año debe estar entre 1900 y ${currentYear}`);
+      setSaving(false);
+      return;
+    }
+
+    // Validar que la fecha sea válida (considerar días por mes)
+    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Verificar año bisiesto
+    const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    if (isLeapYear) daysInMonth[1] = 29;
+
+    if (day > daysInMonth[month - 1]) {
+      setError(`❌ El mes ${month} no tiene ${day} días`);
+      setSaving(false);
+      return;
+    }
+
+    // Verificar que la fecha no sea futura
+    const birthDate = new Date(year, month - 1, day);
+    const today = new Date();
+    if (birthDate > today) {
+      setError('❌ La fecha de nacimiento no puede ser futura');
+      setSaving(false);
+      return;
+    }
+
+    // Validar edad mínima (al menos 10 años)
+    const age = today.getFullYear() - year;
+    if (age < 10) {
+      setError('❌ Debes tener al menos 10 años');
+      setSaving(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/users/update-profile', {
         method: 'POST',
@@ -51,14 +117,14 @@ export default function UpdatePage() {
         body: JSON.stringify({
           groupId: selected.groupId,
           memberId: selected.memberId,
-          birthday: birthday.trim(),
+          birthday: birthdayTrimmed,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al guardar');
       setMessage('✅ ¡Perfil actualizado correctamente!');
       // Actualizar el selected para reflejar el nuevo cumpleaños
-      setSelected({ ...selected, birthday: birthday.trim() });
+      setSelected({ ...selected, birthday: birthdayTrimmed });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -175,13 +241,13 @@ export default function UpdatePage() {
               <div style={{ textAlign: 'center', marginBottom: 16 }}>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>🎂</div>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: '#25d366', marginBottom: 8 }}>
-                  Tu cumpleaños ya está configurado
+                  Tu fecha de nacimiento ya está configurada
                 </h3>
                 <div style={{ fontSize: 24, fontWeight: 800 }}>{selected.birthday}</div>
               </div>
               <div style={{ padding: 16, background: '#111', borderRadius: 6, marginBottom: 16 }}>
                 <p style={{ fontSize: 13, color: '#888', lineHeight: 1.6, margin: 0 }}>
-                  ✅ Tu fecha de cumpleaños ha sido guardada exitosamente y no puede ser modificada.
+                  ✅ Tu fecha de nacimiento ha sido guardada exitosamente y no puede ser modificada.
                   Si necesitas cambiarla, contacta a un administrador del grupo.
                 </p>
               </div>
@@ -196,25 +262,31 @@ export default function UpdatePage() {
             // Si no tiene cumpleaños, permitir configurarlo
             <form onSubmit={handleSave}>
               <label style={{ fontSize: 13, color: '#888', display: 'block', marginBottom: 8 }}>
-                🎂 Configura tu cumpleaños (DD/MM)
+                🎂 Configura tu fecha de nacimiento (DD/MM/AAAA)
               </label>
               <input
                 value={birthday}
-                onChange={(e) => setBirthday(e.target.value)}
-                placeholder="25/12"
-                maxLength={5}
+                onChange={(e) => {
+                  // Solo permitir números y /
+                  const value = e.target.value.replace(/[^\d/]/g, '');
+                  setBirthday(value);
+                }}
+                placeholder="25/12/1990"
+                maxLength={10}
                 required
                 style={{ marginBottom: 8 }}
               />
               <div style={{ fontSize: 11, color: '#666', marginBottom: 16 }}>
-                Formato: DD/MM (ejemplo: 25/12 para 25 de diciembre).<br />
+                Formato: DD/MM/AAAA (ejemplo: 25/12/1990 para 25 de diciembre de 1990).<br />
                 ⚠️ <strong>Una vez guardado, no podrás modificarlo.</strong>
               </div>
               {error && (
-                <div style={{ marginBottom: 12, color: '#e74c3c', fontSize: 13 }}>{error}</div>
+                <div style={{ marginBottom: 12, padding: 12, background: '#2a1a1a', border: '1px solid #e74c3c', borderRadius: 6, color: '#e74c3c', fontSize: 13 }}>
+                  {error}
+                </div>
               )}
               <button type="submit" className="btn-primary" disabled={saving} style={{ width: '100%' }}>
-                {saving ? 'Guardando...' : 'Guardar cumpleaños'}
+                {saving ? 'Guardando...' : 'Guardar fecha de nacimiento'}
               </button>
             </form>
           )}
