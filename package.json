@@ -1,0 +1,14 @@
+{
+  "name": "bot-2026-monorepo",
+  "private": true,
+  "workspaces": ["bot", "panel-web"],
+  "scripts": {
+    "bot": "node --env-file=.env bot/src/index.js",
+    "panel": "npm run dev --workspace=panel-web"
+  },
+  "allowScripts": {
+    "baileys": true,
+    "protobufjs": true,
+    "sharp": true
+  }
+}

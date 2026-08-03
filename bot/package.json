@@ -1,0 +1,30 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "dev": "node --env-file=.env --watch src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "allowScripts": {
+    "baileys": true,
+    "protobufjs": true,
+    "sharp": true
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "baileys": "^7.0.0-rc14",
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^12.3.0",
+    "link-preview-js": "^3.0.5",
+    "@cacheable/node-cache": "^3.1.1",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.1",
+    "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.33.4"
+  }
+}
