@@ -53,7 +53,20 @@ export async function updateGroupAdmin(groupId, data) {
 export async function getGroupMembersAdmin(groupId) {
   initAdminFirebase();
   const snap = await getDb().collection('groups').doc(groupId).collection('members').get();
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  const members = [];
+
+  for (const d of snap.docs) {
+    const memberData = d.data();
+    // Obtener el perfil global para incluir el cumpleaños
+    const globalProfile = await getGlobalProfileAdmin(memberData.jid);
+    members.push({
+      id: d.id,
+      ...memberData,
+      birthday: globalProfile?.birthday || null,
+    });
+  }
+
+  return members;
 }
 
 export async function getMemberAdmin(groupId, memberId) {
@@ -86,23 +99,42 @@ export async function searchMemberByPhone(phone) {
       .limit(1)
       .get();
 
-    membersSnap.forEach((d) =>
-      results.push({ groupId: groupDoc.id, groupJid: groupDoc.data().jid, memberId: d.id, ...d.data() })
-    );
+    for (const d of membersSnap.docs) {
+      const memberData = d.data();
+      // Obtener el perfil global para incluir el cumpleaños
+      const globalProfile = await getGlobalProfileAdmin(memberData.jid);
+      results.push({
+        groupId: groupDoc.id,
+        groupJid: groupDoc.data().jid,
+        groupName: groupDoc.data().name,
+        memberId: d.id,
+        ...memberData,
+        birthday: globalProfile?.birthday || null,
+      });
+    }
 
     // Si no encontró nada, buscar por JID que contiene el número (usuarios con LID)
     if (results.length === 0) {
       const allMembers = await groupDoc.ref.collection('members').get();
-      allMembers.forEach((d) => {
+      for (const d of allMembers.docs) {
         const memberData = d.data();
         // Extraer el número del JID (formato: 51999999999:XX@lid o 51999999999@s.whatsapp.net)
         const jid = memberData.jid || '';
         const jidNumber = jid.split('@')[0].split(':')[0]; // Obtiene "51999999999"
 
         if (jidNumber === normalized) {
-          results.push({ groupId: groupDoc.id, groupJid: groupDoc.data().jid, memberId: d.id, ...memberData });
+          // Obtener el perfil global para incluir el cumpleaños
+          const globalProfile = await getGlobalProfileAdmin(memberData.jid);
+          results.push({
+            groupId: groupDoc.id,
+            groupJid: groupDoc.data().jid,
+            groupName: groupDoc.data().name,
+            memberId: d.id,
+            ...memberData,
+            birthday: globalProfile?.birthday || null,
+          });
         }
-      });
+      }
     }
   }
 
@@ -120,7 +152,17 @@ export async function searchMemberByToken(token) {
       .get();
     if (!snap.empty) {
       const d = snap.docs[0];
-      return { groupId: groupDoc.id, groupJid: groupDoc.data().jid, memberId: d.id, ...d.data() };
+      const memberData = d.data();
+      // Obtener el perfil global para incluir el cumpleaños
+      const globalProfile = await getGlobalProfileAdmin(memberData.jid);
+      return {
+        groupId: groupDoc.id,
+        groupJid: groupDoc.data().jid,
+        groupName: groupDoc.data().name,
+        memberId: d.id,
+        ...memberData,
+        birthday: globalProfile?.birthday || null,
+      };
     }
   }
   return null;
