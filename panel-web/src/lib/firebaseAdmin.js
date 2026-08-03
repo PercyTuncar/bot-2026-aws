@@ -77,16 +77,35 @@ export async function searchMemberByPhone(phone) {
   const normalized = phone.replace(/[^\d]/g, '');
   const groupsSnap = await getDb().collection('groups').get();
   const results = [];
+
   for (const groupDoc of groupsSnap.docs) {
+    // Buscar por phoneNormalized (usuarios antiguos sin LID)
     const membersSnap = await groupDoc.ref
       .collection('members')
       .where('phoneNormalized', '==', normalized)
       .limit(1)
       .get();
+
     membersSnap.forEach((d) =>
       results.push({ groupId: groupDoc.id, groupJid: groupDoc.data().jid, memberId: d.id, ...d.data() })
     );
+
+    // Si no encontró nada, buscar por JID que contiene el número (usuarios con LID)
+    if (results.length === 0) {
+      const allMembers = await groupDoc.ref.collection('members').get();
+      allMembers.forEach((d) => {
+        const memberData = d.data();
+        // Extraer el número del JID (formato: 51999999999:XX@lid o 51999999999@s.whatsapp.net)
+        const jid = memberData.jid || '';
+        const jidNumber = jid.split('@')[0].split(':')[0]; // Obtiene "51999999999"
+
+        if (jidNumber === normalized) {
+          results.push({ groupId: groupDoc.id, groupJid: groupDoc.data().jid, memberId: d.id, ...memberData });
+        }
+      });
+    }
   }
+
   return results;
 }
 
