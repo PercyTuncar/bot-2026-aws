@@ -10,12 +10,23 @@ export async function depositCommand(sock, msg, context) {
   const cash = member?.cash || 0;
   const bank = member?.bank || 0;
   const input = args[0]?.toLowerCase();
-  const amount = (input === 'all' || input === 'todo') ? cash : parseInt(input, 10);
 
-  if (!amount || amount <= 0) {
+  // Validar que se proporcionó un argumento
+  if (!input) {
     await enqueueMessage(remoteJid, { text: '❌ Uso: *!deposit [monto]* o *!deposit all*' }, { quoted: msg }, 1);
     return;
   }
+
+  // Calcular monto a depositar
+  const amount = (input === 'all' || input === 'todo') ? cash : parseInt(input, 10);
+
+  // Validar que el monto sea válido
+  if (isNaN(amount) || amount <= 0) {
+    await enqueueMessage(remoteJid, { text: '❌ Uso: *!deposit [monto]* o *!deposit all*' }, { quoted: msg }, 1);
+    return;
+  }
+
+  // Validar que tenga suficiente efectivo
   if (amount > cash) {
     await enqueueMessage(remoteJid, {
       text: `❌ Saldo insuficiente.\n• 💵 Efectivo disponible: *${formatCoins(cash)}*`,

@@ -10,12 +10,23 @@ export async function withdrawCommand(sock, msg, context) {
   const cash = member?.cash || 0;
   const bank = member?.bank || 0;
   const input = args[0]?.toLowerCase();
-  const amount = (input === 'all' || input === 'todo') ? bank : parseInt(input, 10);
 
-  if (!amount || amount <= 0) {
+  // Validar que se proporcionó un argumento
+  if (!input) {
     await enqueueMessage(remoteJid, { text: '❌ Uso: *!withdraw [monto]* o *!withdraw all*' }, { quoted: msg }, 1);
     return;
   }
+
+  // Calcular monto a retirar
+  const amount = (input === 'all' || input === 'todo') ? bank : parseInt(input, 10);
+
+  // Validar que el monto sea válido
+  if (isNaN(amount) || amount <= 0) {
+    await enqueueMessage(remoteJid, { text: '❌ Uso: *!withdraw [monto]* o *!withdraw all*' }, { quoted: msg }, 1);
+    return;
+  }
+
+  // Validar que tenga suficiente en el banco
   if (amount > bank) {
     await enqueueMessage(remoteJid, {
       text: `❌ Saldo bancario insuficiente.\n• 🏦 Banco disponible: *${formatCoins(bank)}*`,
