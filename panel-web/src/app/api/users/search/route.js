@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { searchMemberByPhone, searchMemberByToken } from '../../../../lib/firebaseAdmin.js';
+import { searchMemberByPhone, searchMemberByToken } from '@/lib/firebaseAdmin.js';
 
 export async function GET(request) {
   try {

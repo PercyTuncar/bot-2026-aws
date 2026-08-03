@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAlertsForGroupAdmin, createAlertAdmin, updateAlertAdmin } from '../../../../lib/firebaseAdmin.js';
+import { getAlertsForGroupAdmin, createAlertAdmin, updateAlertAdmin } from '@/lib/firebaseAdmin.js';
 
 export async function GET(request) {
   try {

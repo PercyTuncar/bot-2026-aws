@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { formatCoins } from '../../../../lib/helpers.js';
+import { formatCoins } from '@/lib/helpers.js';
 
 export default function MembersTable({ members, groupId }) {
   const [search, setSearch] = useState('');

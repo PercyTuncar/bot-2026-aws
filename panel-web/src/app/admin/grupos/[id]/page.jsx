@@ -2,7 +2,7 @@ import {
   getGroupAdmin,
   getGroupMembersAdmin,
   getAlertsForGroupAdmin,
-} from '../../../../lib/firebaseAdmin.js';
+} from '@/lib/firebaseAdmin.js';
 import Link from 'next/link';
 import AlertsManager from './AlertsManager.jsx';
 import MembersTable from './MembersTable.jsx';

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { deleteMemberAdmin } from '../../../../lib/firebaseAdmin.js';
+import { deleteMemberAdmin } from '@/lib/firebaseAdmin.js';
 
 export async function POST(request) {
   try {

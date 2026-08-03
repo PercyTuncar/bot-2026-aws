@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getPendingVouchersAdmin, approveVoucherAdmin, rejectVoucherAdmin } from '../../../../lib/firebaseAdmin.js';
+import { getPendingVouchersAdmin, approveVoucherAdmin, rejectVoucherAdmin } from '@/lib/firebaseAdmin.js';
 
 export async function GET() {
   try {

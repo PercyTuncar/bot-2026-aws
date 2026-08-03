@@ -1,4 +1,4 @@
-import { getAllGroupsAdmin, getPendingVouchersAdmin } from '../../lib/firebaseAdmin.js';
+import { getAllGroupsAdmin, getPendingVouchersAdmin } from '@/lib/firebaseAdmin.js';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';

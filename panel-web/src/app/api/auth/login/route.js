@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { initAdminFirebase } from '../../../../lib/firebaseAdmin.js';
+import { initAdminFirebase } from '@/lib/firebaseAdmin.js';
 import { getAuth } from 'firebase-admin/auth';
-import { createAdminSession, getSessionCookieName } from '../../../../lib/auth.js';
+import { createAdminSession, getSessionCookieName } from '@/lib/auth.js';
 import { cookies } from 'next/headers';
 
 export async function POST(request) {

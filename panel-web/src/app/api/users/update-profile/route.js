@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { upsertGlobalProfileAdmin, sanitizeJid } from '../../../lib/firebaseAdmin.js';
+import { upsertGlobalProfileAdmin, sanitizeJid } from '@/lib/firebaseAdmin.js';
 
 export async function POST(request) {
   try {

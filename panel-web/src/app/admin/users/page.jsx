@@ -1,4 +1,4 @@
-import { getAllMembersAcrossGroups } from '../../../lib/firebaseAdmin.js';
+import { getAllMembersAcrossGroups } from '@/lib/firebaseAdmin.js';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';

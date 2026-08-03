@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getSessionCookieName } from '../../../../lib/auth.js';
+import { getSessionCookieName } from '@/lib/auth.js';
 
 export async function POST() {
   const cookieStore = await cookies();
