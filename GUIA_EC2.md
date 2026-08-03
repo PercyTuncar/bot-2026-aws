@@ -15,22 +15,35 @@ Esta guía te lleva paso a paso desde cero hasta tener tu bot funcionando 24/7 e
 
 ## 🔌 PASO 1: Conectar a tu EC2 por SSH
 
-Desde tu computadora local (Windows):
+Desde tu computadora local (Windows), abre **Git Bash** o **PowerShell**.
 
-### Opción A: Con archivo .pem (recomendado)
+### Conectar con tu archivo keypair.pem
+
 ```bash
-ssh -i "tu-archivo.pem" ubuntu@tu-ip-publica-ec2
+# Navega a la carpeta del proyecto
+cd C:\Users\tunca\OneDrive\Desktop\Github\bot-2026
+
+# Conecta a tu EC2 usando la clave
+ssh -i keypair.pem ubuntu@10.10.10.2
 ```
 
-### Opción B: Con contraseña
-```bash
-ssh ubuntu@tu-ip-publica-ec2
-# Ingresa tu contraseña cuando te la pida
+**Notas:**
+- Si estás conectándote desde **dentro de AWS** (VPC privada), usa la IP privada: `10.10.10.2`
+- Si estás conectándote desde **tu casa/oficina** (internet público), necesitas la IP pública de tu EC2
+- Para ver la IP pública: AWS Console → EC2 → Instances → Selecciona tu instancia → Ver "Public IPv4 address"
+
+### ⚠️ Si aparece error de permisos en Windows
+
+Si ves un error como: `WARNING: UNPROTECTED PRIVATE KEY FILE!`
+
+**En PowerShell, ejecuta:**
+```powershell
+# Ajustar permisos del archivo .pem
+icacls "C:\Users\tunca\OneDrive\Desktop\Github\bot-2026\keypair.pem" /inheritance:r
+icacls "C:\Users\tunca\OneDrive\Desktop\Github\bot-2026\keypair.pem" /grant:r "%USERNAME%:R"
 ```
 
-**Reemplaza:**
-- `tu-archivo.pem` → Ruta a tu archivo de clave privada
-- `tu-ip-publica-ec2` → La IP pública de tu instancia EC2 (ejemplo: `18.191.123.45`)
+Luego vuelve a intentar conectar.
 
 ---
 
