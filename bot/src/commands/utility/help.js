@@ -1,12 +1,13 @@
 import { enqueueMessage } from '../../queue/sendQueue.js';
 import { getMember } from '../../firebase/firebaseClient.js';
-import { getAllCommands } from '../../registry/commandRegistry.js';
+import { getAllCommands, getCommand } from '../../registry/commandRegistry.js';
+import { commandHelp } from '../../registry/commandHelp.js';
 
 /**
- * !help — Muestra comandos disponibles según el rol del usuario
+ * !help — Muestra comandos disponibles o ayuda detallada de un comando específico
  */
 export async function helpCommand(sock, msg, context) {
-  const { senderJid, groupJid, isAdmin, isOwner, isGroup } = context;
+  const { args, senderJid, groupJid, isAdmin, isOwner, isGroup } = context;
   const remoteJid = msg.key.remoteJid;
 
   if (!isGroup) {
@@ -15,6 +16,109 @@ export async function helpCommand(sock, msg, context) {
     }, { quoted: msg }, 1);
     return;
   }
+
+  // Si se especificó un comando, mostrar ayuda detallada
+  if (args.length > 0) {
+    const commandName = args[0].toLowerCase().replace('!', '');
+    const cmd = getCommand(commandName);
+
+    if (!cmd) {
+      await enqueueMessage(remoteJid, {
+        text: `❌ El comando *!${commandName}* no existe.\n\nUsa *!help* para ver todos los comandos disponibles.`,
+      }, { quoted: msg }, 1);
+      return;
+    }
+
+    // Verificar si el usuario tiene acceso al comando
+    const member = await getMember(groupJid, senderJid);
+    const purchasedItems = (member?.inventory || []).map(item => item.itemId);
+
+    let hasAccess = false;
+    if (cmd.permission === 'all') {
+      hasAccess = true;
+    } else if (cmd.permission === 'admin' && isAdmin) {
+      hasAccess = true;
+    } else if (cmd.permission === 'owner' && isOwner) {
+      hasAccess = true;
+    } else if (cmd.permission === 'bought' && cmd.shopItemId && purchasedItems.includes(cmd.shopItemId)) {
+      hasAccess = true;
+    }
+
+    // Mostrar ayuda detallada del comando
+    await showCommandHelp(sock, msg, cmd, hasAccess);
+    return;
+  }
+
+  // Mostrar lista general de comandos
+  await showGeneralHelp(sock, msg, context);
+}
+
+async function showCommandHelp(sock, msg, cmd, hasAccess) {
+  const remoteJid = msg.key.remoteJid;
+
+  // Obtener metadata de ayuda
+  const helpData = commandHelp[cmd.name] || {};
+
+  let text = `📖 *Ayuda: !${cmd.name}*\n\n`;
+
+  // Descripción
+  text += `${helpData.description || 'Sin descripción disponible.'}\n\n`;
+
+  // Aliases
+  if (cmd.aliases && cmd.aliases.length > 0) {
+    text += `*Aliases:* ${cmd.aliases.map(a => `!${a}`).join(', ')}\n\n`;
+  }
+
+  // Categoría
+  const categoryEmojis = {
+    utility: '🔧',
+    economy: '💰',
+    games: '🎮',
+    shop: '🛒',
+    moderation: '🛡️',
+  };
+  const emoji = categoryEmojis[cmd.category] || '📌';
+  text += `*Categoría:* ${emoji} ${cmd.category.charAt(0).toUpperCase() + cmd.category.slice(1)}\n\n`;
+
+  // Uso
+  if (helpData.usage) {
+    text += `*Uso:*\n${helpData.usage}\n\n`;
+  }
+
+  // Ejemplos
+  if (helpData.examples && helpData.examples.length > 0) {
+    text += `*Ejemplos:*\n`;
+    helpData.examples.forEach(example => {
+      text += `  • ${example}\n`;
+    });
+    text += `\n`;
+  }
+
+  // Cooldown
+  if (cmd.cooldown) {
+    text += `⏱️ *Cooldown:* Este comando tiene tiempo de espera entre usos.\n\n`;
+  }
+
+  // Acceso
+  if (!hasAccess) {
+    if (cmd.permission === 'bought') {
+      text += `🔒 *Este comando es premium.*\n`;
+      text += `Cómpralo con: *!shop*\n`;
+    } else if (cmd.permission === 'admin') {
+      text += `🛡️ *Requiere permisos de administrador.*\n`;
+    } else if (cmd.permission === 'owner') {
+      text += `👑 *Solo para el propietario del bot.*\n`;
+    }
+  } else {
+    text += `✅ *Tienes acceso a este comando.*\n`;
+  }
+
+  await enqueueMessage(remoteJid, { text }, { quoted: msg }, 1);
+}
+
+async function showGeneralHelp(sock, msg, context) {
+  const { senderJid, groupJid, isAdmin, isOwner } = context;
+  const remoteJid = msg.key.remoteJid;
 
   // Obtener datos del usuario para verificar comandos comprados
   const member = await getMember(groupJid, senderJid);
@@ -112,7 +216,7 @@ export async function helpCommand(sock, msg, context) {
   }
 
   // Agregar footer
-  text += `📖 Usa *!comando* para ejecutarlo\n`;
+  text += `📖 Usa *!help [comando]* para ver detalles\n`;
   text += `🆔 Usa *!id* para actualizar tu perfil web`;
 
   await enqueueMessage(remoteJid, { text }, { quoted: msg }, 1);
