@@ -6,6 +6,7 @@ import {
 import Link from 'next/link';
 import AlertsManager from './AlertsManager.jsx';
 import MembersTable from './MembersTable.jsx';
+import GroupSettings from './GroupSettings.jsx';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,6 +87,12 @@ export default async function GroupDetailPage({ params }) {
       <section className="card" style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>⏰ Alertas Programadas</h2>
         <AlertsManager groupId={id} groupJid={group.jid} initialAlerts={alerts} />
+      </section>
+
+      {/* Group Settings section */}
+      <section className="card" style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>⚙️ Configuración del Grupo</h2>
+        <GroupSettings group={group} groupId={id} />
       </section>
 
       {/* Members section */}
