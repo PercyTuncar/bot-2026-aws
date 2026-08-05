@@ -165,7 +165,8 @@ NEXT_PUBLIC_EXCHANGE_RATE=1000
 | `!deposit/!withdraw [all]` | Gestión banco |
 | `!transfer/!yapear @u [monto]` | Transferir |
 | `!rob @usuario` | Robar (45% éxito) |
-| `!crime` | Crimen (55% éxito) |
+| `!crime` | Crimen en Ravehub City (55% éxito) |
+| `!crime @usuario` | Crimen contra usuario (55% éxito) |
 | `!loan [monto]` | Solicitar préstamo (20% interés) |
 | `!infocorp` | Lista de deudores |
 | `!top` | Ranking de riqueza |

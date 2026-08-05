@@ -148,7 +148,7 @@ export function getQuotedMessageKey(msg) {
 }
 
 /**
- * Work phrases for !work command — festival/concert theme.
+ * Work phrases for !work command — variedad de trabajos en Ravehub City.
  */
 export const WORK_PHRASES = [
   'Vendiste palomitas en el festival 🍿 y ganaste',
@@ -161,4 +161,44 @@ export const WORK_PHRASES = [
   'Ayudaste con el escenario antes del show 🎪 y ganaste',
   'Vendiste pulseras del evento 🎟️ y ganaste',
   'Manejaste el carro de souvenirs 🛒 y ganaste',
+  'Hiciste delivery en bicicleta por Ravehub 🚴 y ganaste',
+  'Paseaste perros en el parque central 🐕 y ganaste',
+  'Bartender en un bar de moda 🍹 y ganaste',
+  'Reparaste computadoras en un café 💻 y ganaste',
+  'DJ en una fiesta privada 🎧 y ganaste',
+  'Limpiaste grafitis en el metro 🚇 y ganaste',
+  'Preparaste hamburguesas en un food truck 🍔 y ganaste',
+  'Diste clases de baile en la plaza 💃 y ganaste',
+  'Vendiste artesanías en la feria 🎨 y ganaste',
+  'Hiciste de Uber por la ciudad 🚕 y ganaste',
+  'Entrenaste en el gimnasio como sparring 🥊 y ganaste',
+  'Moderaste un torneo de videojuegos 🎮 y ganaste',
+  'Repartiste pizzas en moto 🍕 y ganaste',
+  'Fuiste extra en una película local 🎬 y ganaste',
+  'Lavaste autos en el car wash 🚙 y ganaste',
+  'Vendiste café en una esquina ☕ y ganaste',
+  'Hiciste de mimo en el distrito turístico 🎭 y ganaste',
+  'Cuidaste niños en un cumpleaños 🎂 y ganaste',
+  'Ayudaste en una mudanza 📦 y ganaste',
+  'Tradujiste documentos online 📝 y ganaste',
+  'Diseñaste logos para empresas locales 🎨 y ganaste',
+  'Instalaste internet en edificios 📡 y ganaste',
+  'Hiciste mantenimiento de jardines 🌱 y ganaste',
+  'Reparaste bicicletas en el taller 🔧 y ganaste',
+  'Vendiste flores en la avenida principal 💐 y ganaste',
+  'Diste tours turísticos por Ravehub 🗺️ y ganaste',
+  'Editaste videos para youtubers 🎥 y ganaste',
+  'Cocinaste en un restaurante japonés 🍣 y ganaste',
+  'Organizaste un evento corporativo 💼 y ganaste',
+  'Pintaste murales en el barrio bohemio 🖌️ y ganaste',
+  'Vendiste helados en el malecón 🍦 y ganaste',
+  'Hiciste streaming de videojuegos 🎮 y ganaste',
+  'Reparaste celulares en el centro comercial 📱 y ganaste',
+  'Fuiste camarógrafo en una boda 📹 y ganaste',
+  'Vendiste ropa vintage en el mercado 👕 y ganaste',
+  'Diste clases de yoga en el parque 🧘 y ganaste',
+  'Hiciste tatuajes temporales en la playa 💉 y ganaste',
+  'Armaste muebles para clientes 🪑 y ganaste',
+  'Vendiste empanadas en la terminal 🥟 y ganaste',
+  'Hiciste malabares en el semáforo 🤹 y ganaste',
 ];

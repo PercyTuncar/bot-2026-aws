@@ -91,9 +91,9 @@ export const commandHelp = {
   },
 
   crime: {
-    description: 'Comete un crimen para ganar RCoins. Alto riesgo, alta recompensa.',
-    usage: '!crime',
-    examples: ['!crime', '!crimen'],
+    description: 'Comete un crimen en Ravehub City o contra un usuario específico. Alto riesgo, alta recompensa.',
+    usage: '!crime - Crimen en la ciudad\n!crime @usuario - Crimen contra alguien',
+    examples: ['!crime', '!crimen', '!crime @Juan'],
   },
 
   loan: {
