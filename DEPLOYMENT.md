@@ -204,13 +204,13 @@ NEXT_PUBLIC_EXCHANGE_RATE=1000
 
 | ID | Nombre | Precio | Efecto |
 |----|--------|--------|--------|
-| `shield` | Escudo Antirrobos | 5,000 RC | Protege de robos 24h |
-| `eraser` | Borrador de Advertencias | 8,000 RC | Elimina 1 advertencia |
-| `multiplier` | Multiplicador de Ganancias | 6,000 RC | x2 en !work por 24h |
-| `vv` | Ver mensajes VV | 10,000 RC | Usar !vv |
-| `lock` | Bloqueo de Formato | 7,000 RC | Bloquear tipo de contenido |
-| `unlock` | Desbloqueo de Formato | 2,000 RC | Desbloquear contenido |
-| `insta` | Descarga Instagram | 4,000 RC | Usar .insta |
+| `shield` | Escudo Antirrobos | 10 RC | Protege de robos 24h |
+| `eraser` | Borrador de Advertencias | 200 RC | Elimina 1 advertencia |
+| `multiplier` | Multiplicador de Ganancias | 10 RC | x2 en !work por 24h |
+| `vv` | Ver mensajes VV | 250 RC | Usar !vv |
+| `lock` | Bloqueo de Formato | 120 RC | Bloquear tipo de contenido |
+| `unlock` | Desbloqueo de Formato | 100 RC | Desbloquear contenido |
+| `insta` | Descarga Instagram | 150 RC | Usar .insta |
 
 ## 7. Sistema de niveles
 
