@@ -84,6 +84,37 @@ export const cooldownMsg = (remaining) =>
   `⏳ Espera ${bold(remaining)} para volver a usar este comando.`;
 
 /**
+ * Formatea un cumpleaños (Timestamp de Firebase) a formato "DD de Mes" (sin año).
+ * Ejemplo: formatBirthday(timestamp) → "15 de Marzo"
+ */
+export function formatBirthday(birthday) {
+  if (!birthday) return null;
+
+  // Si es un Timestamp de Firebase, convertir a Date
+  let date;
+  if (birthday.toDate && typeof birthday.toDate === 'function') {
+    date = birthday.toDate();
+  } else if (birthday instanceof Date) {
+    date = birthday;
+  } else if (birthday._seconds) {
+    // Formato interno de Timestamp de Firebase
+    date = new Date(birthday._seconds * 1000);
+  } else {
+    return null;
+  }
+
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+
+  return `${day} de ${month}`;
+}
+
+/**
  * Construye la respuesta de perfil (!me).
  */
 export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, hasShield, birthday, lidNumber }) {
@@ -98,7 +129,13 @@ export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, 
     bullet('Advertencias', `${warnings}/3`),
   ];
   if (hasShield) lines.push(`🛡️ Escudo activo`);
-  if (birthday) lines.push(bullet('Cumpleaños', birthday));
+
+  // Formatear cumpleaños correctamente
+  const formattedBirthday = formatBirthday(birthday);
+  if (formattedBirthday) {
+    lines.push(bullet('Cumpleaños', formattedBirthday));
+  }
+
   if (lidNumber) {
     lines.push(`\n${bullet('Tu ID', lidNumber)}`);
     lines.push(`\n_Usa ${bold('!id')} para actualizar tu perfil web_`);
