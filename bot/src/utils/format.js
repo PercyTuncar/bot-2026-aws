@@ -249,7 +249,7 @@ export function buildWelcomeText(template, { memberJid, participantCount, groupS
 export function formatCoins(amount) {
   if (amount === undefined || amount === null) return '$0 RC';
   const num = Math.round(Number(amount));
-  return `${bold('$' + num.toLocaleString('en-US'))} RC`;
+  return `$${num.toLocaleString('en-US')} RC`;
 }
 
 /**
