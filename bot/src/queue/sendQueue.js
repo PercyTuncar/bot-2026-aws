@@ -27,6 +27,7 @@ const MAX_RETRIES = 3;
 const BASE_DELAY_MS = 1000; // 1-3 segundos de jitter entre mensajes
 const MAX_DELAY_MS = 3000;
 const RISK_THRESHOLD = 5; // Pausar tras 5 fallos consecutivos
+const MAX_QUEUE_SIZE = 1000; // Límite máximo de mensajes en cola
 
 export function initSendQueue(socketInstance) {
   sock = socketInstance;
@@ -43,6 +44,12 @@ export function initSendQueue(socketInstance) {
  * @returns {Promise<object>} - Mensaje enviado
  */
 export async function enqueueMessage(remoteJid, content, options = {}, priority = 0) {
+  // Verificar si la cola está llena
+  if (queue.length >= MAX_QUEUE_SIZE) {
+    console.error(`[sendQueue] QUEUE FULL: ${queue.length} messages. Rejecting new message.`);
+    return Promise.reject(new Error('Queue is full. Try again later.'));
+  }
+
   return new Promise((resolve, reject) => {
     const task = {
       remoteJid,

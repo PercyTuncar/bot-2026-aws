@@ -7,6 +7,10 @@ import { Timestamp } from 'firebase-admin/firestore';
 
 const OWNER_JID = process.env.OWNER_JID || '';
 const LOG_MESSAGES = process.env.LOG_MESSAGES === 'true';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// En producción, solo loguear comandos y errores, no todos los mensajes
+const SHOULD_LOG_ALL_MESSAGES = LOG_MESSAGES && NODE_ENV !== 'production';
 
 export async function handleMessage(sock, msg) {
   try {
@@ -36,7 +40,7 @@ export async function handleMessage(sock, msg) {
 
     // DM del dueño: procesar comandos (incluyendo fromMe: true)
     if (!isGroup) {
-      if (LOG_MESSAGES || true) { // Siempre logear DMs para debug
+      if (SHOULD_LOG_ALL_MESSAGES) {
         console.log(`[DM] remote=${remoteJid} | sender=${senderJid} | owner=${isOwner} | text="${text}"`);
       }
 
@@ -78,7 +82,7 @@ export async function handleMessage(sock, msg) {
     if (!text || !/^[.!]/.test(text)) return;
     const [rawCmd, ...args] = text.slice(1).trim().split(/\s+/);
     const cmdName = rawCmd?.toLowerCase();
-    if (LOG_MESSAGES) console.log(`[CMD] ${cmdName}`);
+    if (SHOULD_LOG_ALL_MESSAGES) console.log(`[CMD] ${cmdName}`);
     try { await sock.sendMessage(remoteJid, { react: { text: '⏳', key: msg.key } }); } catch {}
     let ok = false;
     try {

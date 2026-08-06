@@ -20,9 +20,9 @@ import { getGroupParticipants } from '../services/moderationService.js';
 import { enqueueMessage } from '../queue/sendQueue.js';
 import { buildAlertMessage } from '../utils/format.js';
 
-const CHECK_ALERTS_INTERVAL = 60 * 1000;       // 1 min
-const CHECK_LOANS_INTERVAL = 5 * 60 * 1000;    // 5 min
-const CLEANUP_ITEMS_INTERVAL = 10 * 60 * 1000; // 10 min
+const CHECK_ALERTS_INTERVAL = 5 * 60 * 1000;   // 5 min (reducido de 1 min)
+const CHECK_LOANS_INTERVAL = 15 * 60 * 1000;   // 15 min (reducido de 5 min)
+const CLEANUP_ITEMS_INTERVAL = 30 * 60 * 1000; // 30 min (reducido de 10 min)
 const CONCURRENCY_LIMIT = 5; // Máximo de grupos evaluados en paralelo (PRD 0.5)
 
 let sock = null;
