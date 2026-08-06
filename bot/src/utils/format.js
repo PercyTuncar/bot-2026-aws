@@ -180,15 +180,41 @@ export function buildEconomyResult({ emoji, mainText, subText, cash }) {
 /**
  * Construye mensaje de balance (!balance, !wallet).
  */
-export function buildBalanceMessage({ cash, bank }) {
+export function buildBalanceMessage({ cash, bank, debt, loanInfo }) {
   const total = (cash || 0) + (bank || 0);
-  return [
+  const lines = [
     `${section('💰', 'Tu Balance')}\n`,
     bullet('💵 Efectivo', formatCoins(cash)),
     bullet('🏦 Banco', formatCoins(bank)),
     sep(),
     bullet('📊 Total', formatCoins(total)),
-  ].join('\n');
+  ];
+
+  // Mostrar deuda si existe
+  if (debt && debt > 0) {
+    lines.push(sep());
+    lines.push(bullet('💳 Deuda Total', formatCoins(debt)));
+
+    // Si hay un préstamo activo, mostrar información adicional
+    if (loanInfo) {
+      if (loanInfo.status === 'overdue' || loanInfo.status === 'infocorp') {
+        lines.push(`⚠️ ${italic('¡Préstamo vencido! Estás en Infocorp')}`);
+      } else if (loanInfo.status === 'active' && loanInfo.dueAt) {
+        const dueDate = new Date(loanInfo.dueAt).toLocaleString('es-PE', {
+          timeZone: 'America/Lima',
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        lines.push(`📅 ${italic(`Vence: ${dueDate}`)}`);
+      }
+    }
+
+    lines.push(`\n💡 ${italic('Tus ingresos se destinan automáticamente al pago')}`);
+  }
+
+  return lines.join('\n');
 }
 
 /**

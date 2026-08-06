@@ -1,5 +1,5 @@
 import { getAllMembers } from '../../firebase/firebaseClient.js';
-import { formatCoins } from '../../utils/helpers.js';
+import { formatCoins, cleanJidForDisplay } from '../../utils/helpers.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
 export async function topCommand(sock, msg, context) {
@@ -18,12 +18,25 @@ export async function topCommand(sock, msg, context) {
   }
 
   const medals = ['🥇', '🥈', '🥉'];
-  let text = `🏆 *Top 10 — Ricos del Grupo*\n\n`;
+  let text = `🏆 *Top 10 — Los Ricos de Ravehub City*\n\n`;
+
+  // Construir lista con menciones
+  const mentions = [];
   sorted.forEach((m, i) => {
     const medal = medals[i] || `${i + 1}.`;
-    const name = m.pushName || m.jid?.replace('@s.whatsapp.net', '') || m.id;
-    text += `${medal} *${name}* — ${formatCoins(m.total)}\n`;
+    const jid = m.jid;
+
+    if (jid) {
+      mentions.push(jid);
+      text += `${medal} @${cleanJidForDisplay(jid)} — ${formatCoins(m.total)}\n`;
+    } else {
+      const name = m.pushName || m.id || 'Usuario';
+      text += `${medal} *${name}* — ${formatCoins(m.total)}\n`;
+    }
   });
 
-  await enqueueMessage(remoteJid, { text }, { quoted: msg }, 1);
+  await enqueueMessage(remoteJid, {
+    text,
+    mentions,
+  }, { quoted: msg }, 1);
 }

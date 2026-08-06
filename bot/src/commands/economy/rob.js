@@ -70,17 +70,44 @@ export async function robCommand(sock, msg, context) {
   const success = Math.random() < 0.45;
 
   if (success) {
-    const stolen = Math.floor(targetCash * (randomInt(10, 40) / 100));
+    // Calcular robo entre 10-100% del efectivo de la víctima, mínimo 1 RC
+    let stolen = Math.floor(targetCash * (randomInt(10, 100) / 100));
+
+    // Si el robo calculado es 0, robar al menos 1 RC (siempre que la víctima tenga efectivo)
+    if (stolen === 0 && targetCash > 0) {
+      stolen = 1;
+    }
+
+    // Verificar si robó TODO el efectivo (100% o muy cerca)
+    const robbedEverything = stolen >= targetCash;
+
     await deductCash(groupJid, targetJid, stolen);
     await creditCash(groupJid, senderJid, stolen);
     const updated = await getMember(groupJid, senderJid);
 
+    let message;
+    if (robbedEverything) {
+      // Mensajes divertidos cuando se roba TODO
+      const fullRobMessages = [
+        `🦹 *¡ROBO PERFECTO!*\n\n> ¡Le vaciaste los bolsillos completamente a @${cleanJidForDisplay(targetJid)}!\n> 💰 Te llevaste TODO su efectivo: *${formatCoins(stolen)}*\n> 😱 @${cleanJidForDisplay(targetJid)} quedó en bancarrota!\n\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+        `🦹 *¡GOLPE MAESTRO!*\n\n> ¡Desvalijaste completamente a @${cleanJidForDisplay(targetJid)}!\n> 💸 Botín total: *${formatCoins(stolen)}*\n> 🤑 @${cleanJidForDisplay(targetJid)} quedó sin un centavo!\n\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+        `🦹 *¡ROBO DEL SIGLO!*\n\n> ¡Le quitaste hasta el último RCoin a @${cleanJidForDisplay(targetJid)}!\n> 💰 Robaste: *${formatCoins(stolen)}*\n> 😭 @${cleanJidForDisplay(targetJid)} ahora está en ceros!\n\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+        `🦹 *¡LIMPIEZA TOTAL!*\n\n> ¡Le sacaste hasta las monedas del sofá a @${cleanJidForDisplay(targetJid)}!\n> 💵 Todo lo que tenía: *${formatCoins(stolen)}*\n> 💔 @${cleanJidForDisplay(targetJid)} quedó pelado!\n\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+        `🦹 *¡ROBO HISTÓRICO!*\n\n> ¡Arrasaste con TODO el efectivo de @${cleanJidForDisplay(targetJid)}!\n> 🎯 Botín completo: *${formatCoins(stolen)}*\n> 😨 @${cleanJidForDisplay(targetJid)} no le quedó nada!\n\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+      ];
+      message = fullRobMessages[randomInt(0, fullRobMessages.length - 1)];
+    } else {
+      // Mensaje normal de robo parcial
+      message = `🦹 *¡Robo exitoso!*\n\n> Le robaste *${formatCoins(stolen)}* a @${cleanJidForDisplay(targetJid)}\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`;
+    }
+
     await enqueueMessage(remoteJid, {
-      text: `🦹 *¡Robo exitoso!*\n\n> Le robaste *${formatCoins(stolen)}* a @${cleanJidForDisplay(targetJid)}\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+      text: message,
       mentions: [targetJid],
     }, { quoted: msg }, 1);
   } else {
-    const fine = randomInt(1, 3);
+    // Multa aumentada: 5-15 RC
+    const fine = randomInt(5, 15);
     await deductCash(groupJid, senderJid, fine);
     const updated = await getMember(groupJid, senderJid);
 
