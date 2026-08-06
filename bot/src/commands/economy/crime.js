@@ -1,5 +1,5 @@
 import { getMember, upsertMember } from '../../firebase/firebaseClient.js';
-import { deductCash, creditCash, setCooldown } from '../../services/economyService.js';
+import { deductCash, creditCash, setCooldown, getActiveItem } from '../../services/economyService.js';
 import { formatCoins, randomInt, isCooldownExpired, getCooldownRemaining, cleanJidForDisplay } from '../../utils/helpers.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
@@ -90,6 +90,28 @@ export async function crimeCommand(sock, msg, context) {
     const target = await getMember(groupJid, targetJid);
     if (!target) {
       await enqueueMessage(remoteJid, { text: '❌ No encontré a ese usuario en el grupo.' }, { quoted: msg }, 1);
+      return;
+    }
+
+    // Verificar si la víctima tiene guardaespaldas activo
+    const hasBodyguard = !!getActiveItem(target, 'bodyguard');
+    if (hasBodyguard) {
+      const penalty = randomInt(5, 10);
+      await deductCash(groupJid, senderJid, penalty);
+
+      const bodyguardMessages = [
+        `💂 El guardaespaldas de @${cleanJidForDisplay(targetJid)} te interceptó antes de actuar!`,
+        `💂 El equipo de seguridad de @${cleanJidForDisplay(targetJid)} te descubrió y te echó!`,
+        `💂 Un guardaespaldas profesional te detuvo cuando te acercabas a @${cleanJidForDisplay(targetJid)}!`,
+        `💂 La seguridad personal de @${cleanJidForDisplay(targetJid)} te atrapó en el acto!`,
+        `💂 El escolta de @${cleanJidForDisplay(targetJid)} te neutralizó antes de que pudieras hacer algo!`,
+      ];
+      const message = bodyguardMessages[randomInt(0, bodyguardMessages.length - 1)];
+
+      await enqueueMessage(remoteJid, {
+        text: `${message}\n\n> Tu intento falló y perdiste *${formatCoins(penalty)}* como penalización.`,
+        mentions: [targetJid],
+      }, { quoted: msg }, 1);
       return;
     }
 

@@ -115,9 +115,24 @@ export function formatBirthday(birthday) {
 }
 
 /**
+ * Formatea tiempo restante para items activos (en formato "Xh Ym Zs")
+ */
+export function formatTimeRemaining(expiresAt) {
+  if (!expiresAt) return '';
+  const remaining = Math.max(0, expiresAt - Date.now());
+  const hours = Math.floor(remaining / (60 * 60 * 1000));
+  const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+  const seconds = Math.floor((remaining % (60 * 1000)) / 1000);
+
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
+/**
  * Construye la respuesta de perfil (!me).
  */
-export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, hasShield, birthday, lidNumber }) {
+export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, shieldItem, bodyguardItem, birthday, lidNumber }) {
   const lines = [
     `${section('👤', 'Tu Perfil en este Grupo')}\n`,
     bullet('Nombre', pushName || 'Sin nombre'),
@@ -128,7 +143,16 @@ export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, 
     bullet('Banco', `${formatCoins(bank)}`),
     bullet('Advertencias', `${warnings}/3`),
   ];
-  if (hasShield) lines.push(`🛡️ Escudo activo`);
+
+  // Mostrar shields activos con tiempo restante
+  if (shieldItem) {
+    const timeLeft = formatTimeRemaining(shieldItem.expiresAt);
+    lines.push(`🛡️ Escudo activo ${timeLeft}`);
+  }
+  if (bodyguardItem) {
+    const timeLeft = formatTimeRemaining(bodyguardItem.expiresAt);
+    lines.push(`💂 Guardaespaldas activo ${timeLeft}`);
+  }
 
   // Formatear cumpleaños correctamente
   const formattedBirthday = formatBirthday(birthday);

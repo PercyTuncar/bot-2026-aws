@@ -27,8 +27,13 @@ export async function meCommand(sock, msg, context) {
   const globalProfile = await getGlobalProfile(senderJid);
   const { level, progress, required, isMax } = getLevelProgress(member);
   const warnings = (member.warnings || []).length;
-  const hasShield = (member.inventory || []).some(
+
+  // Verificar shields activos con tiempo restante
+  const shieldItem = (member.inventory || []).find(
     (i) => i.itemId === 'shield' && i.active && i.expiresAt > Date.now()
+  );
+  const bodyguardItem = (member.inventory || []).find(
+    (i) => i.itemId === 'bodyguard' && i.active && i.expiresAt > Date.now()
   );
 
   const text = buildProfileMessage({
@@ -41,7 +46,8 @@ export async function meCommand(sock, msg, context) {
     cash: member.cash || 0,
     bank: member.bank || 0,
     warnings,
-    hasShield,
+    shieldItem,
+    bodyguardItem,
     birthday: globalProfile?.birthday,
     lidNumber, // Pasar el LID en lugar del profileLink
   });

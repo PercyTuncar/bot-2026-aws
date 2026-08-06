@@ -206,6 +206,7 @@ NEXT_PUBLIC_EXCHANGE_RATE=1000
 | ID | Nombre | Precio | Efecto |
 |----|--------|--------|--------|
 | `shield` | Escudo Antirrobos | 10 RC | Protege de robos 24h |
+| `bodyguard` | Guardaespaldas Personal | 10 RC | Protege de crímenes 24h |
 | `eraser` | Borrador de Advertencias | 200 RC | Elimina 1 advertencia |
 | `multiplier` | Multiplicador de Ganancias | 10 RC | x2 en !work por 24h |
 | `vv` | Ver mensajes VV | 250 RC | Usar !vv |

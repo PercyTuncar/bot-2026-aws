@@ -259,6 +259,13 @@ export const SHOP_ITEMS = {
     price: 10,
     duration: 24 * 60 * 60 * 1000,
   },
+  bodyguard: {
+    id: 'bodyguard',
+    name: '💂 Guardaespaldas Personal',
+    description: 'Te protege de crímenes dirigidos durante 24 horas.',
+    price: 10,
+    duration: 24 * 60 * 60 * 1000,
+  },
   eraser: {
     id: 'eraser',
     name: '🧹 Borrador de Advertencias',
