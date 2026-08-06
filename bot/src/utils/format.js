@@ -180,10 +180,14 @@ export function buildEconomyResult({ emoji, mainText, subText, cash }) {
 /**
  * Construye mensaje de balance (!balance, !wallet).
  */
-export function buildBalanceMessage({ cash, bank, debt, loanInfo }) {
+export function buildBalanceMessage({ cash, bank, debt, loanInfo, userName = 'Tu', isOtherUser = false }) {
   const total = (cash || 0) + (bank || 0);
+
+  // Determinar el título según si es propio o de otro usuario
+  const title = isOtherUser ? `Balance de ${userName}` : 'Tu Balance';
+
   const lines = [
-    `${section('💰', 'Tu Balance')}\n`,
+    `${section('💰', title)}\n`,
     bullet('💵 Efectivo', formatCoins(cash)),
     bullet('🏦 Banco', formatCoins(bank)),
     sep(),
@@ -198,7 +202,7 @@ export function buildBalanceMessage({ cash, bank, debt, loanInfo }) {
     // Si hay un préstamo activo, mostrar información adicional
     if (loanInfo) {
       if (loanInfo.status === 'overdue' || loanInfo.status === 'infocorp') {
-        lines.push(`⚠️ ${italic('¡Préstamo vencido! Estás en Infocorp')}`);
+        lines.push(`⚠️ ${italic('¡Préstamo vencido! Está en Infocorp')}`);
       } else if (loanInfo.status === 'active' && loanInfo.dueAt) {
         const dueDate = new Date(loanInfo.dueAt).toLocaleString('es-PE', {
           timeZone: 'America/Lima',

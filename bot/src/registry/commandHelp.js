@@ -49,9 +49,9 @@ export const commandHelp = {
 
   // ─── Economy ─────────────────────────────────────────────────────────────────
   balance: {
-    description: 'Muestra tu saldo de efectivo actual.',
-    usage: '!balance',
-    examples: ['!balance', '!bal', '!wallet'],
+    description: 'Muestra tu saldo de efectivo actual, o el de otro usuario si lo mencionas.',
+    usage: '!balance [@usuario]',
+    examples: ['!balance', '!balance @Juan', '!bal', '!wallet'],
   },
 
   bank: {
