@@ -1,6 +1,6 @@
 import { autoKick, getBotIsAdmin } from '../../services/moderationService.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
-import { getQuotedMessageKey } from '../../utils/helpers.js';
+import { getQuotedMessageKey, cleanJidForDisplay } from '../../utils/helpers.js';
 
 export async function kickCommand(sock, msg, context) {
   const { args, groupJid } = context;
@@ -55,7 +55,7 @@ export async function kickCommand(sock, msg, context) {
   await autoKick(sock, groupJid, targetJid, reason);
 
   await enqueueMessage(remoteJid, {
-    text: `🚫 @${targetJid.replace('@s.whatsapp.net', '')} fue *expulsado* del grupo.\n> _${reason}_`,
+    text: `🚫 @${cleanJidForDisplay(targetJid)} fue *expulsado* del grupo.\n> _${reason}_`,
     mentions: [targetJid],
   }, { quoted: msg }, 1);
 }

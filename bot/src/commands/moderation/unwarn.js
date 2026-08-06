@@ -1,5 +1,6 @@
 import { removeLastWarning, removeAllWarnings } from '../../services/moderationService.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
+import { cleanJidForDisplay } from '../../utils/helpers.js';
 
 export async function unwarnCommand(sock, msg, context) {
   const { args, groupJid } = context;
@@ -19,9 +20,8 @@ export async function unwarnCommand(sock, msg, context) {
     ? await removeAllWarnings(groupJid, targetJid)
     : await removeLastWarning(groupJid, targetJid);
 
-  const shortJid = targetJid.replace('@s.whatsapp.net', '');
   await enqueueMessage(remoteJid, {
-    text: `✅ Advertencia(s) eliminada(s) de @${shortJid}.\n• ⚠️ Advertencias restantes: *${remaining}/3*`,
+    text: `✅ Advertencia(s) eliminada(s) de @${cleanJidForDisplay(targetJid)}.\n• ⚠️ Advertencias restantes: *${remaining}/3*`,
     mentions: [targetJid],
   }, { quoted: msg }, 1);
 }

@@ -67,6 +67,16 @@ export function generateToken(jid) {
 }
 
 /**
+ * Clean JID for display in mentions (removes @s.whatsapp.net and @lid).
+ * Example: "51999999999:12@lid" → "51999999999:12"
+ * Example: "51999999999@s.whatsapp.net" → "51999999999"
+ */
+export function cleanJidForDisplay(jid) {
+  if (!jid) return '';
+  return jid.replace('@s.whatsapp.net', '').replace('@lid', '');
+}
+
+/**
  * Check if a cooldown has expired.
  * NOTE: cooldowns are stored as expiration timestamps (Date.now() + duration),
  * not as "last used" timestamps. Always pass the expiration timestamp here.

@@ -1,6 +1,6 @@
 import { getMember, upsertMember } from '../../firebase/firebaseClient.js';
 import { deductCash, creditCash, setCooldown } from '../../services/economyService.js';
-import { formatCoins, randomInt, isCooldownExpired, getCooldownRemaining } from '../../utils/helpers.js';
+import { formatCoins, randomInt, isCooldownExpired, getCooldownRemaining, cleanJidForDisplay } from '../../utils/helpers.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
 const COOLDOWN_MS = 10 * 60 * 1000; // 10 minutos
@@ -95,7 +95,7 @@ export async function crimeCommand(sock, msg, context) {
 
     // Crimen contra usuario específico
     scenario = PERSONAL_CRIMES[randomInt(0, PERSONAL_CRIMES.length - 1)];
-    targetName = targetJid.replace('@s.whatsapp.net', '').replace('@lid', '');
+    targetName = cleanJidForDisplay(targetJid);
 
     // Reemplazar @victim con el nombre real
     scenario = {

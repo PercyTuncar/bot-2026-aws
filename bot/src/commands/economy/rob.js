@@ -1,6 +1,6 @@
 import { getMember, upsertMember } from '../../firebase/firebaseClient.js';
 import { deductCash, creditCash, getActiveItem, setCooldown } from '../../services/economyService.js';
-import { formatCoins, randomInt, isCooldownExpired, getCooldownRemaining } from '../../utils/helpers.js';
+import { formatCoins, randomInt, isCooldownExpired, getCooldownRemaining, cleanJidForDisplay } from '../../utils/helpers.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
 const COOLDOWN_MS = 3 * 60 * 1000; // 3 minutos
@@ -51,7 +51,7 @@ export async function robCommand(sock, msg, context) {
     const penalty = randomInt(1, 3);
     await deductCash(groupJid, senderJid, penalty);
     await enqueueMessage(remoteJid, {
-      text: `🛡️ @${targetJid.replace('@s.whatsapp.net', '')} tiene un *Escudo Antirrobos* activo!\n\n> Tu intento falló y perdiste *${formatCoins(penalty)}* como penalización.`,
+      text: `🛡️ @${cleanJidForDisplay(targetJid)} tiene un *Escudo Antirrobos* activo!\n\n> Tu intento falló y perdiste *${formatCoins(penalty)}* como penalización.`,
       mentions: [targetJid],
     }, { quoted: msg }, 1);
     return;
@@ -60,7 +60,7 @@ export async function robCommand(sock, msg, context) {
   const targetCash = target.cash || 0;
   if (targetCash === 0) {
     await enqueueMessage(remoteJid, {
-      text: `💸 @${targetJid.replace('@s.whatsapp.net', '')} no tiene efectivo para robar.`,
+      text: `💸 @${cleanJidForDisplay(targetJid)} no tiene efectivo para robar.`,
       mentions: [targetJid],
     }, { quoted: msg }, 1);
     return;
@@ -76,7 +76,7 @@ export async function robCommand(sock, msg, context) {
     const updated = await getMember(groupJid, senderJid);
 
     await enqueueMessage(remoteJid, {
-      text: `🦹 *¡Robo exitoso!*\n\n> Le robaste *${formatCoins(stolen)}* a @${targetJid.replace('@s.whatsapp.net', '')}\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+      text: `🦹 *¡Robo exitoso!*\n\n> Le robaste *${formatCoins(stolen)}* a @${cleanJidForDisplay(targetJid)}\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
       mentions: [targetJid],
     }, { quoted: msg }, 1);
   } else {
@@ -85,7 +85,7 @@ export async function robCommand(sock, msg, context) {
     const updated = await getMember(groupJid, senderJid);
 
     await enqueueMessage(remoteJid, {
-      text: `👮 *¡Robo fallido!*\n\n> Te atraparon intentando robar a @${targetJid.replace('@s.whatsapp.net', '')}\n• 💸 Multa: *${formatCoins(fine)}*\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+      text: `👮 *¡Robo fallido!*\n\n> Te atraparon intentando robar a @${cleanJidForDisplay(targetJid)}\n• 💸 Multa: *${formatCoins(fine)}*\n• 💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
       mentions: [targetJid],
     }, { quoted: msg }, 1);
   }

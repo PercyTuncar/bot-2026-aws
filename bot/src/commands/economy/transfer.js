@@ -1,6 +1,6 @@
 import { getMember } from '../../firebase/firebaseClient.js';
 import { transferCash } from '../../services/economyService.js';
-import { formatCoins } from '../../utils/helpers.js';
+import { formatCoins, cleanJidForDisplay } from '../../utils/helpers.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
 export async function transferCommand(sock, msg, context) {
@@ -30,7 +30,7 @@ export async function transferCommand(sock, msg, context) {
 
   const sender = await getMember(groupJid, senderJid);
   await enqueueMessage(remoteJid, {
-    text: `💸 *Transferencia exitosa*\n\n> Enviaste *${formatCoins(amount)}* a @${targetJid.replace('@s.whatsapp.net', '')}\n• 💵 Tu efectivo: *${formatCoins(sender?.cash || 0)}*`,
+    text: `💸 *Transferencia exitosa*\n\n> Enviaste *${formatCoins(amount)}* a @${cleanJidForDisplay(targetJid)}\n• 💵 Tu efectivo: *${formatCoins(sender?.cash || 0)}*`,
     mentions: [targetJid],
   }, { quoted: msg }, 1);
 }
