@@ -48,6 +48,10 @@ async function connectToWhatsApp() {
     // PRD 0.1: getMessage — requerido para reintentos y descifrado de encuestas
     getMessage: async (key) => getMessageFromStore(key),
     // PRD 0.1: NO fijar versión del protocolo — dejar el valor por defecto
+    // Solución para "Decrypted message with closed session"
+    shouldIgnoreJid: () => false,
+    // Configuración de retry para mensajes
+    retryRequestDelayMs: 350,
   });
 
   // Inicializar la cola central de envío con el socket actual
