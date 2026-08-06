@@ -54,7 +54,7 @@ export async function pingCommand(sock, msg, context) {
 • Uptime Bot: *${uptimeStr}*
 • Cola de mensajes: *${queueHealth}* (${queueStatus.length} pendientes)
 ${queueStatus.paused ? '• ⚠️ Cola pausada por seguridad\n' : ''}
-🖥️ *Servidor AWS EC2*
+🖥️ *Servidor:*
 • CPU: *${cpuUsagePercent}%* uso (${cpuCount} cores)
 • Modelo: _${cpuModel}_
 • RAM: *${memUsagePercent}%* uso
