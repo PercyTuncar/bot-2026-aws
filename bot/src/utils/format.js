@@ -260,7 +260,7 @@ export function buildWarnMessage({ targetShortJid, reason, count, wasKicked }) {
     `${section('⚠️', 'Advertencia registrada')}\n`,
     bullet('Usuario', `@${targetShortJid}`),
     quote(reason),
-    bullet('Advertencias', `${bold(String(count))}/3`),
+    bullet('Advertencias', `${count}/3`),
   ];
   if (wasKicked) lines.push(`\n🚫 El usuario fue ${bold('expulsado')} por acumular 3 advertencias.`);
   return lines.join('\n');
