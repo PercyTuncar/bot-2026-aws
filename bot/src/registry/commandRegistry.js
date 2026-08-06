@@ -33,6 +33,7 @@ import { crimeCommand } from '../commands/economy/crime.js';
 import { loanCommand } from '../commands/economy/loan.js';
 import { infocorpCommand } from '../commands/economy/infocorp.js';
 import { topCommand } from '../commands/economy/top.js';
+import { topdebtCommand } from '../commands/economy/topdebt.js';
 import { shopCommand } from '../commands/shop/shop.js';
 import { buyCommand } from '../commands/shop/buy.js';
 import { inventoryCommand } from '../commands/shop/inventory.js';
@@ -93,6 +94,7 @@ const commands = [
   { name: 'loan', aliases: ['prestamo', 'préstamo'], category: 'economy', permission: 'all', handler: loanCommand },
   { name: 'infocorp', aliases: [], category: 'economy', permission: 'all', handler: infocorpCommand },
   { name: 'top', aliases: ['ranking'], category: 'economy', permission: 'all', handler: topCommand },
+  { name: 'topdebt', aliases: ['topdeuda', 'deudores'], category: 'economy', permission: 'all', handler: topdebtCommand },
 
   // ─── Shop ────────────────────────────────────────────────────────────────────
   { name: 'shop', aliases: ['tienda'], category: 'shop', permission: 'all', handler: shopCommand },

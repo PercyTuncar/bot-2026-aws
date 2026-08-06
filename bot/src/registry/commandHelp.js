@@ -114,6 +114,12 @@ export const commandHelp = {
     examples: ['!top', '!ranking'],
   },
 
+  topdebt: {
+    description: 'Muestra el ranking de los usuarios más endeudados de Ravehub City.',
+    usage: '!topdebt',
+    examples: ['!topdebt', '!topdeuda', '!deudores'],
+  },
+
   // ─── Games ───────────────────────────────────────────────────────────────────
   slot: {
     description: 'Juega a la máquina tragamonedas y gana hasta 3x tu apuesta.',
