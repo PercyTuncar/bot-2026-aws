@@ -33,7 +33,7 @@ export async function bankCommand(sock, msg, context) {
   // Construir mensaje con imagen
   await enqueueMessage(remoteJid, {
     image: { url: BANK_IMAGE_URL },
-    caption: `🏦 *Saldo bancario de ${displayName}*\n\n• 🏦 Banco: *${formatCoins(bank)}*\n\n> _El tiempo vale más que el dinero_`,
+    caption: `🏦 *Saldo bancario de ${displayName}*\n\n• 🏦 Banco: *${formatCoins(bank)}*\n\n> _Es tiempo de ir por más_`,
     mentions: mentionsList,
   }, { quoted: msg }, 1);
 }
