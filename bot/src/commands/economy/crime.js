@@ -104,7 +104,22 @@ export async function crimeCommand(sock, msg, context) {
         `💂 El equipo de seguridad de @${cleanJidForDisplay(targetJid)} te descubrió y te echó!`,
         `💂 Un guardaespaldas profesional te detuvo cuando te acercabas a @${cleanJidForDisplay(targetJid)}!`,
         `💂 La seguridad personal de @${cleanJidForDisplay(targetJid)} te atrapó en el acto!`,
-        `💂 El escolta de @${cleanJidForDisplay(targetJid)} te neutralizó antes de que pudieras hacer algo!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} te neutralizó antes de que pudieras hacer algo!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} te pescó en las cámaras de seguridad!`,
+        `💂 Un wachiman con palo te corrió de la propiedad de @${cleanJidForDisplay(targetJid)}!`,
+        `💂 El perro del wachiman de @${cleanJidForDisplay(targetJid)} te olió y ladraron!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} te cachó y llamó a la policía!`,
+        `💂 Te enfrentaste al wachiman de @${cleanJidForDisplay(targetJid)} y perdiste!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} activó la alarma apenas llegaste!`,
+        `💂 Dos wachimanes te agarraron cuando intentabas acercarte a @${cleanJidForDisplay(targetJid)}!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} estaba despierto y alerta!`,
+        `💂 Te resbalaste huyendo del wachiman de @${cleanJidForDisplay(targetJid)}!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} te reconoció de las cámaras!`,
+        `💂 El wachiman veterano de @${cleanJidForDisplay(targetJid)} ya conoce tus trucos!`,
+        `💂 Subestimaste al wachiman de @${cleanJidForDisplay(targetJid)} y pagaste el precio!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} te tiró con su linterna!`,
+        `💂 El wachiman de @${cleanJidForDisplay(targetJid)} te persiguió hasta que te cansaste!`,
+        `💂 La ronda del wachiman de @${cleanJidForDisplay(targetJid)} arruinó tus planes!`,
       ];
       const message = bodyguardMessages[randomInt(0, bodyguardMessages.length - 1)];
 

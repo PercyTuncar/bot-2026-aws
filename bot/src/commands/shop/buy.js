@@ -41,7 +41,25 @@ export async function buyCommand(sock, msg, context) {
   inventory.push(newItem);
   await upsertMember(groupJid, senderJid, { inventory });
 
+  // Mensaje personalizado para bodyguard
+  let successMessage = `✅ *Compra exitosa*\n\n${item.name}\n💰 Pagaste: *${formatCoins(item.price)}*\n💵 Efectivo restante: *${formatCoins(cash - item.price)}*`;
+
+  if (item.id === 'bodyguard') {
+    const bodyguardPurchaseMessages = [
+      `\n\n💂 ¡Contrataste a un wachiman profesional! Ahora tienes protección 24/7.`,
+      `\n\n💂 ¡Un wachiman veterano se unió a tu equipo! Nadie se te acercará.`,
+      `\n\n💂 ¡Tu nuevo wachiman está listo para protegerte de criminales!`,
+      `\n\n💂 ¡Contrataste al mejor wachiman de Ravehub City! Estás a salvo.`,
+      `\n\n💂 ¡Tu wachiman personal ya está en su puesto vigilando!`,
+    ];
+    const randomMsg = bodyguardPurchaseMessages[Math.floor(Math.random() * bodyguardPurchaseMessages.length)];
+    successMessage += randomMsg;
+    successMessage += `\n💡 Usa *!use ${item.id}* para activarlo cuando quieras.`;
+  } else {
+    successMessage += `\n\n${item.duration ? `💡 Usa *!use ${item.id}* para activarlo cuando quieras.` : `✅ Ya está disponible en tu inventario.`}`;
+  }
+
   await sock.sendMessage(remoteJid, {
-    text: `✅ *Compra exitosa*\n\n${item.name}\n💰 Pagaste: *${formatCoins(item.price)}*\n💵 Efectivo restante: *${formatCoins(cash - item.price)}*\n\n${item.duration ? `💡 Usa *!use ${item.id}* para activarlo cuando quieras.` : `✅ Ya está disponible en tu inventario.`}`,
+    text: successMessage,
   }, { quoted: msg });
 }

@@ -167,7 +167,7 @@ export const commandHelp = {
   buy: {
     description: 'Compra un item de la tienda.',
     usage: '!buy [id del item]',
-    examples: ['!buy shield', '!comprar insta'],
+    examples: ['!buy shield', '!buy bodyguard', '!comprar multiplier', '!buy insta'],
   },
 
   inventory: {
@@ -179,7 +179,7 @@ export const commandHelp = {
   use: {
     description: 'Usa un item de tu inventario.',
     usage: '!use [id del item]',
-    examples: ['!use shield'],
+    examples: ['!use shield', '!use bodyguard', '!use multiplier'],
   },
 
   // ─── Moderation ──────────────────────────────────────────────────────────────
