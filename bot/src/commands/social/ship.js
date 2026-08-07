@@ -173,7 +173,7 @@ export async function shipCommand(sock, msg, context) {
 
   // Mostrar resultado final
   await sock.sendMessage(remoteJid, {
-    text: `💕 *Ship Calculator* 💕\n\n┌─────────────────\n│ @${cleanJidForDisplay(user1Jid)}\n│ 💖\n│ @${cleanJidForDisplay(user2Jid)}\n└─────────────────\n\n${emoji}\n\n_"${message}"_\n\n━━━━━━━━━━━━━━━\n📊 *Compatibilidad: ${percentage}%*\n━━━━━━━━━━━━━━━`,
+    text: `💕 *Ship Calculator* 💕\n\n> @${cleanJidForDisplay(user1Jid)}\n> 💖\n> @${cleanJidForDisplay(user2Jid)}\n\n*${emoji}*\n\n_"${message}"_\n\n📊 *Compatibilidad: ${percentage}%*`,
     mentions: [user1Jid, user2Jid],
     edit: loadingMsg.key,
   });
