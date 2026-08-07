@@ -118,22 +118,58 @@ export async function shipCommand(sock, msg, context) {
   const percentage = getShipPercentage(user1Jid, user2Jid);
   const [emoji, message] = getShipMessage(percentage);
 
-  // Animación de carga
+  // Animación de carga progresiva (6 etapas)
   const loadingMsg = await sock.sendMessage(remoteJid, {
-    text: `💕 *Calculando compatibilidad...*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n🔄 Analizando...`,
+    text: `💕 *Ship Calculator*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n⚙️ Iniciando análisis...`,
     mentions: [user1Jid, user2Jid],
   }, { quoted: msg });
 
-  await new Promise((r) => setTimeout(r, 1500));
+  await new Promise((r) => setTimeout(r, 1200));
 
-  // Actualizar con progreso
+  // Etapa 2
   await sock.sendMessage(remoteJid, {
-    text: `💕 *Calculando compatibilidad...*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n🔄 Procesando datos... 50%`,
+    text: `💕 *Ship Calculator*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n🔍 Escaneando perfiles...\n▓░░░░░░░░░ 10%`,
     mentions: [user1Jid, user2Jid],
     edit: loadingMsg.key,
   });
 
-  await new Promise((r) => setTimeout(r, 1500));
+  await new Promise((r) => setTimeout(r, 1000));
+
+  // Etapa 3
+  await sock.sendMessage(remoteJid, {
+    text: `💕 *Ship Calculator*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n🧬 Analizando química...\n▓▓▓░░░░░░░ 30%`,
+    mentions: [user1Jid, user2Jid],
+    edit: loadingMsg.key,
+  });
+
+  await new Promise((r) => setTimeout(r, 1100));
+
+  // Etapa 4
+  await sock.sendMessage(remoteJid, {
+    text: `💕 *Ship Calculator*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n💫 Calculando compatibilidad...\n▓▓▓▓▓░░░░░ 50%`,
+    mentions: [user1Jid, user2Jid],
+    edit: loadingMsg.key,
+  });
+
+  await new Promise((r) => setTimeout(r, 1000));
+
+  // Etapa 5
+  await sock.sendMessage(remoteJid, {
+    text: `💕 *Ship Calculator*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n🔮 Consultando el destino...\n▓▓▓▓▓▓▓░░░ 75%`,
+    mentions: [user1Jid, user2Jid],
+    edit: loadingMsg.key,
+  });
+
+  await new Promise((r) => setTimeout(r, 1200));
+
+  // Etapa 6
+  await sock.sendMessage(remoteJid, {
+    text: `💕 *Ship Calculator*\n\n👤 ${user1Name}\n❤️\n👤 ${user2Name}\n\n✨ Finalizando cálculos...\n▓▓▓▓▓▓▓▓▓░ 95%`,
+    mentions: [user1Jid, user2Jid],
+    edit: loadingMsg.key,
+  });
+
+  await new Promise((r) => setTimeout(r, 800));
 
   // Mostrar resultado final
   await sock.sendMessage(remoteJid, {
