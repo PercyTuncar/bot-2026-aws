@@ -1,22 +1,80 @@
 import { getMember } from '../../firebase/firebaseClient.js';
 import { deductCashOrBank } from '../../services/economyService.js';
-import { formatCoins, cleanJidForDisplay } from '../../utils/helpers.js';
+import { formatCoins, cleanJidForDisplay, randomInt } from '../../utils/helpers.js';
 
 const MARICOMETRO_COST = 1;
 
-// Mensajes de resultados según el porcentaje
+// Mensajes de resultados según rangos con múltiples opciones aleatorias
 const MARICOMETRO_MESSAGES = {
-  0: ['🚹 0%', 'Más hetero imposible. 100% macho alfa.'],
-  10: ['😐 10%', 'Casi nada. Solo un toque de sensibilidad.'],
-  20: ['🤔 20%', 'Un poco sospechoso, pero nada confirmado.'],
-  30: ['👀 30%', 'Empieza a notarse algo...'],
-  40: ['🌈 40%', 'Definitivamente hay señales.'],
-  50: ['🎨 50%', '50/50. Perfectamente balanceado.'],
-  60: ['💅 60%', 'Ya es bastante obvio.'],
-  70: ['✨ 70%', 'El armario está empezando a abrirse.'],
-  80: ['🦄 80%', 'Muy evidente. Solo falta la confirmación oficial.'],
-  90: ['🌈✨ 90%', '¡Casi saliendo del armario completamente!'],
-  100: ['🏳️‍🌈 100%', '¡SÚPER GAY! Orgullosamente fuera del armario. 🎉'],
+  // 0% - 10%: Muy hetero
+  low: [
+    '100% Macho pecho peludo, lomo plateado, que se respeta.',
+    'Más hetero imposible. Alpha total.',
+    'Testosterona pura. Cero pluma detectada.',
+    'Macho alfa. Ni una señal sospechosa.',
+    'Hetero nivel Dios. Respetos.',
+    'Cero gay. 100% macizo.',
+    '0 indicios. Puro macho.',
+    'Hetero certificado. Sin duda alguna.',
+    'Ni un poquito. Totalmente heterosexual.',
+    'Macho recio. Pluma: inexistente.',
+  ],
+
+  // 11% - 40%: Un poco dudoso
+  medium_low: [
+    'Mmm... medio dudoso, pero pasable.',
+    'Se le nota un toquecito, pero tranqui.',
+    'Algo sospechoso, pero nada confirmado.',
+    'Un pelín de pluma, casi imperceptible.',
+    'Ligeramente cuestionable... pero bueno.',
+    'Se le escapa un amague nomás.',
+    'Dudoso level bajo. Aún hay esperanza.',
+    'Apenas y se nota. Casi hetero.',
+    'Un toque de sensibilidad extra... sospechoso.',
+    'Medio rarito, pero pasa desapercibido.',
+  ],
+
+  // 41% - 70%: Bastante obvio
+  medium_high: [
+    '¡Cuidado! Medio rosquete el muchacho.',
+    'Ya se nota bastante. Pluma detectada.',
+    'Alerta: Nivel considerable de fabulosidad.',
+    'Uy, aquí hay tela que cortar...',
+    'Se le ve el plumerito ya.',
+    'Medio obvio la verdad. 👀',
+    'Se está notando mucho, bebita.',
+    'Ya no lo oculta tan bien...',
+    'Bastante sospechoso. Confirmación pendiente.',
+    'El armario está abierto a medias.',
+  ],
+
+  // 71% - 90%: Muy gay
+  high: [
+    '¡Peligro! Casi casi Bebita.',
+    'Alerta roja: Pluma nivel avanzado.',
+    'Ya es muy obvio. Solo falta la confirmación.',
+    'Se le sale la pluma por todos lados.',
+    'Bebita en formación. Casi completo.',
+    'El armario está abierto de par en par.',
+    'Uy, este ya está del otro lado...',
+    'Casi 100% confirmado. Pluma everywhere.',
+    'Se le nota a kilómetros. Muy gay.',
+    'Solo falta que lo admita oficialmente.',
+  ],
+
+  // 91% - 100%: 100% Gay
+  ultra: [
+    '¡100% Cabrazo!!! Se te recontra quemó el arroz, bebita. 💅',
+    'Mariconazo!! Mucha pluma por aquí, se te chorrea el helado. 🦩',
+    '¡SÚPER GAY! Ya salió del armario completo. 🏳️‍🌈',
+    'Bebita confirmada. Pluma nivel experto. ✨',
+    '100% Fabuloso. Orgullo al máximo. 🌈',
+    'Se te quemó el arroz, se te cayó el helado, se te perdió todo bebita.',
+    'Pluma certificada. Gay de closet nunca más.',
+    'Demasiada pluma. Es oficialmente un pavo real. 🦚',
+    'Se le sale el brillo por los poros. 100% gay.',
+    'Nivel: Icono LGBT. Sin retorno posible. 💅✨',
+  ],
 };
 
 function getMaricometroPercentage(jid) {
@@ -32,13 +90,30 @@ function getMaricometroPercentage(jid) {
 }
 
 function getMaricometroMessage(percentage) {
-  // Encontrar el rango más cercano
-  const ranges = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-  const closest = ranges.reduce((prev, curr) => {
-    return Math.abs(curr - percentage) < Math.abs(prev - percentage) ? curr : prev;
-  });
+  let category;
+  let emoji;
 
-  return MARICOMETRO_MESSAGES[closest];
+  if (percentage <= 10) {
+    category = 'low';
+    emoji = '🚹';
+  } else if (percentage <= 40) {
+    category = 'medium_low';
+    emoji = '🤔';
+  } else if (percentage <= 70) {
+    category = 'medium_high';
+    emoji = '🌈';
+  } else if (percentage <= 90) {
+    category = 'high';
+    emoji = '🦄';
+  } else {
+    category = 'ultra';
+    emoji = '🏳️‍🌈';
+  }
+
+  const messages = MARICOMETRO_MESSAGES[category];
+  const randomMessage = messages[randomInt(0, messages.length - 1)];
+
+  return [emoji, randomMessage];
 }
 
 export async function maricometroCommand(sock, msg, context) {
