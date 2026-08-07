@@ -209,7 +209,7 @@ export async function maricometroCommand(sock, msg, context) {
 
   // Mostrar resultado final
   await sock.sendMessage(remoteJid, {
-    text: `🌈 *Maricómetro* 🌈\n\n> @${cleanJidForDisplay(targetJid)}\n\n*${emoji}*\n\n_"${message}"_\n\n📊 *Nivel Gay: ${percentage}%*`,
+    text: `🌈 *MARICÓMETRO* 🌈\n\n> @${cleanJidForDisplay(targetJid)} ${emoji}\n\n_"${message}"_\n\n📊 *Nivel Gay: ${percentage}%*`,
     mentions: [targetJid],
     edit: loadingMsg.key,
   });
