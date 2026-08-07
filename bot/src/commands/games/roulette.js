@@ -4,7 +4,7 @@ import { spinRoulette, resolveRouletteBet } from '../../services/gamesService.js
 import { addGameResult } from '../../firebase/firebaseClient.js';
 import { formatCoins } from '../../utils/helpers.js';
 
-const ROULETTE_IMAGE_URL = 'https://res.cloudinary.com/amadodedios/image/upload/v1786116926/casino-imagen_nuhzn6.jpg';
+const ROULETTE_IMAGE_URL = 'https://res.cloudinary.com/amadodedios/image/upload/v1786117874/casino-imagen_ri0ds5.jpg';
 
 const HELP_TEXT = `🎡 *Ruleta — Cómo Jugar*
 
