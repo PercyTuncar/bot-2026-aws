@@ -164,3 +164,41 @@ export async function setCooldown(groupJid, memberJid, key, ms) {
   const expiresAt = Date.now() + ms;
   await updateMember(groupJid, memberJid, { [`cooldowns.${key}`]: expiresAt });
 }
+
+/**
+ * Deduct coins from cash first, then from bank if needed.
+ * If insufficient in both, returns { success: false }.
+ * Returns { success, fromCash, fromBank, total }
+ */
+export async function deductCashOrBank(groupJid, memberJid, amount) {
+  const member = await getMember(groupJid, memberJid);
+  if (!member) return { success: false, fromCash: 0, fromBank: 0, total: 0 };
+
+  const cash = member.cash || 0;
+  const bank = member.bank || 0;
+  const amt = Math.round(amount);
+
+  // Check if user has enough in cash + bank
+  if (cash + bank < amt) {
+    return { success: false, fromCash: 0, fromBank: 0, total: 0 };
+  }
+
+  let fromCash = 0;
+  let fromBank = 0;
+
+  // Deduct from cash first
+  if (cash >= amt) {
+    fromCash = amt;
+    await upsertMember(groupJid, memberJid, { cash: Math.round(cash - amt) });
+  } else {
+    // Take all from cash, rest from bank
+    fromCash = cash;
+    fromBank = amt - cash;
+    await upsertMember(groupJid, memberJid, {
+      cash: 0,
+      bank: Math.round(bank - fromBank),
+    });
+  }
+
+  return { success: true, fromCash, fromBank, total: amt };
+}

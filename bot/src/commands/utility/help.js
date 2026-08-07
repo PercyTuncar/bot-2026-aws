@@ -76,6 +76,7 @@ async function showCommandHelp(sock, msg, cmd, hasAccess) {
     games: '🎮',
     shop: '🛒',
     moderation: '🛡️',
+    social: '💕',
   };
   const emoji = categoryEmojis[cmd.category] || '📌';
   text += `*Categoría:* ${emoji} ${cmd.category.charAt(0).toUpperCase() + cmd.category.slice(1)}\n\n`;
@@ -134,6 +135,7 @@ async function showGeneralHelp(sock, msg, context) {
     games: { name: '🎮 Juegos', commands: [] },
     shop: { name: '🛒 Tienda', commands: [] },
     moderation: { name: '🛡️ Moderación', commands: [] },
+    social: { name: '💕 Romance & Social', commands: [] },
   };
 
   // Clasificar comandos según permisos

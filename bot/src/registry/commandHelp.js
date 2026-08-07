@@ -278,4 +278,15 @@ export const commandHelp = {
     usage: '!groups',
     examples: ['!groups'],
   },
+
+  // ─── Social ──────────────────────────────────────────────────────────────────
+  ship: {
+    description: 'Calcula el nivel de compatibilidad romántica entre dos personas usando algoritmos avanzados... o algo así. 💕',
+    usage: '!ship @usuario1 @usuario2\n!ship @usuario',
+    examples: [
+      '!ship @Juan @María',
+      '!ship @Pedro',
+      '!ship (para ver las instrucciones)',
+    ],
+  },
 };

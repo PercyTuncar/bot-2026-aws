@@ -46,6 +46,7 @@ import { dadoCommand } from '../commands/games/dado.js';
 import { pptCommand } from '../commands/games/ppt.js';
 import { statsCommand } from '../commands/games/stats.js';
 import { alertsCommand } from '../commands/moderation/alerts.js';
+import { shipCommand } from '../commands/social/ship.js';
 
 /**
  * Permission levels:
@@ -110,6 +111,9 @@ const commands = [
   { name: 'dado', aliases: ['dice'], category: 'games', permission: 'all', handler: dadoCommand },
   { name: 'ppt', aliases: ['rps'], category: 'games', permission: 'all', handler: pptCommand },
   { name: 'stats', aliases: ['estadisticas'], category: 'games', permission: 'all', handler: statsCommand },
+
+  // ─── Social ─────────────────────────────────────────────────────────────────
+  { name: 'ship', aliases: [], category: 'social', permission: 'all', handler: shipCommand },
 ];
 
 // Build lookup map (name + all aliases)
