@@ -83,7 +83,7 @@ const commands = [
   { name: 'alerts', aliases: [], category: 'moderation', permission: 'admin', handler: alertsCommand },
 
   // ─── Economy ─────────────────────────────────────────────────────────────────
-  { name: 'work', aliases: [], category: 'economy', permission: 'all', cooldown: 'work', handler: workCommand },
+  { name: 'work', aliases: [], category: 'economy', permission: 'all', handler: workCommand },
   { name: 'balance', aliases: ['wallet', 'bal'], category: 'economy', permission: 'all', handler: balanceCommand },
   { name: 'bank', aliases: [], category: 'economy', permission: 'all', handler: bankCommand },
   { name: 'deposit', aliases: ['dep'], category: 'economy', permission: 'all', handler: depositCommand },
