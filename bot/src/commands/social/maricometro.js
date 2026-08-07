@@ -124,7 +124,7 @@ export async function maricometroCommand(sock, msg, context) {
   // Si no hay menciones, mostrar ayuda
   if (mentions.length === 0) {
     await sock.sendMessage(remoteJid, {
-      text: `🌈 *Maricómetro*\n\n*Uso:*\n• \`!maricometro @usuario\` — Calcula el nivel gay del usuario\n• \`!mariposometro @usuario\` — (Alias)\n\n💰 *Costo:* ${formatCoins(MARICOMETRO_COST)} por uso\n\n_⚠️ Este es un juego de humor. No representa orientaciones sexuales reales._`,
+      text: `🌈 *Maricómetro*\n\n*Uso:*\n• \`!maricometro @usuario\` — Calcula el nivel gay del usuario\n• \`!mariposometro @usuario\` — (Alias)\n\n💰 *Costo:* ${formatCoins(MARICOMETRO_COST)} por uso`,
     }, { quoted: msg });
     return;
   }
@@ -209,7 +209,7 @@ export async function maricometroCommand(sock, msg, context) {
 
   // Mostrar resultado final
   await sock.sendMessage(remoteJid, {
-    text: `🌈 *Maricómetro* 🌈\n\n> @${cleanJidForDisplay(targetJid)}\n\n*${emoji}*\n\n_"${message}"_\n\n📊 *Nivel Gay: ${percentage}%*\n\n_⚠️ Esto es solo humor, no representa la realidad._`,
+    text: `🌈 *Maricómetro* 🌈\n\n> @${cleanJidForDisplay(targetJid)}\n\n*${emoji}*\n\n_"${message}"_\n\n📊 *Nivel Gay: ${percentage}%*`,
     mentions: [targetJid],
     edit: loadingMsg.key,
   });
