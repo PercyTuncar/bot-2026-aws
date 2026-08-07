@@ -27,6 +27,18 @@ export async function warnCommand(sock, msg, context) {
     return;
   }
 
+  // ── Verificar que no sea el owner ─────────────────────────────────────────
+  const OWNER_JID = process.env.OWNER_JID || '';
+  const ownerNormalized = OWNER_JID.replace(/:.*@/, '@');
+  const targetNormalized = targetJid.replace(/:.*@/, '@');
+
+  if (targetNormalized === ownerNormalized) {
+    await enqueueMessage(remoteJid, {
+      text: '❌ No puedes advertir al propietario del bot.',
+    }, { quoted: msg }, 1);
+    return;
+  }
+
   // ── Borrar el mensaje infractor (solo cuando se usó reply) ─────────────────
   if (quotedKey?.id) {
     try {

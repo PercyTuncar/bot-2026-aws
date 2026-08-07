@@ -26,6 +26,18 @@ export async function kickCommand(sock, msg, context) {
     return;
   }
 
+  // ── Verificar que no sea el owner ─────────────────────────────────────────
+  const OWNER_JID = process.env.OWNER_JID || '';
+  const ownerNormalized = OWNER_JID.replace(/:.*@/, '@');
+  const targetNormalized = targetJid.replace(/:.*@/, '@');
+
+  if (targetNormalized === ownerNormalized) {
+    await enqueueMessage(remoteJid, {
+      text: '❌ No puedes expulsar al propietario del bot.',
+    }, { quoted: msg }, 1);
+    return;
+  }
+
   const botIsAdmin = await getBotIsAdmin(sock, groupJid);
   if (!botIsAdmin) {
     await enqueueMessage(remoteJid, {
