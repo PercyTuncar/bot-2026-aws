@@ -59,15 +59,15 @@ export async function handleMessage(sock, msg) {
       return;
     }
 
-    // Ignorar mensajes propios en grupos, EXCEPTO si es el owner ejecutando un comando
-    if (msg.key.fromMe && !(isOwner && text && /^[.!]/.test(text))) return;
+    // Ignorar mensajes propios en grupos, EXCEPTO si es el owner
+    if (msg.key.fromMe && !isOwner) return;
 
     const group = await getGroup(remoteJid);
     if (!group || !group.active) return;
 
-    // No registrar al bot como miembro cuando envía sus propios mensajes
+    // Registrar miembro (incluyendo al owner cuando escribe desde el bot)
     let memberData = null;
-    if (!msg.key.fromMe) {
+    if (!msg.key.fromMe || isOwner) {
       memberData = await registerMember(sock, remoteJid, senderJid, msg, senderAlt);
     }
 
