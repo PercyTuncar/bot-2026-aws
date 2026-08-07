@@ -36,6 +36,22 @@ export async function meCommand(sock, msg, context) {
     (i) => i.itemId === 'bodyguard' && i.active && i.expiresAt > Date.now()
   );
 
+  // Calcular deuda total
+  const loans = member?.loans || [];
+  let totalDebt = 0;
+  let hasOverdueLoan = false;
+
+  for (const loan of loans) {
+    if (loan.type === 'loan' && (loan.status === 'active' || loan.status === 'overdue' || loan.status === 'infocorp')) {
+      totalDebt += loan.amount || 0;
+      if (loan.status === 'overdue' || loan.status === 'infocorp') {
+        hasOverdueLoan = true;
+      }
+    } else if (loan.type === 'fine') {
+      totalDebt += loan.amount || 0;
+    }
+  }
+
   const text = buildProfileMessage({
     pushName: member.pushName || 'Sin nombre',
     level,
@@ -50,6 +66,8 @@ export async function meCommand(sock, msg, context) {
     bodyguardItem,
     birthday: globalProfile?.birthday,
     lidNumber, // Pasar el LID en lugar del profileLink
+    totalDebt,
+    hasOverdueLoan,
   });
 
   await enqueueMessage(remoteJid, { text }, { quoted: msg }, 1);

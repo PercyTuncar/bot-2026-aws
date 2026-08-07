@@ -132,7 +132,7 @@ export function formatTimeRemaining(expiresAt) {
 /**
  * Construye la respuesta de perfil (!me).
  */
-export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, shieldItem, bodyguardItem, birthday, lidNumber }) {
+export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, required, cash, bank, warnings, shieldItem, bodyguardItem, birthday, lidNumber, totalDebt = 0, hasOverdueLoan = false }) {
   const lines = [
     `${section('👤', 'Tu Perfil en este Grupo')}\n`,
     bullet('Nombre', pushName || 'Sin nombre'),
@@ -152,6 +152,20 @@ export function buildProfileMessage({ pushName, level, isMax, messageCount, xp, 
   if (bodyguardItem) {
     const timeLeft = formatTimeRemaining(bodyguardItem.expiresAt);
     lines.push(`💂 Guardaespaldas activo ${timeLeft}`);
+  }
+
+  // Mostrar sección de deudas
+  if (totalDebt > 0) {
+    lines.push('');
+    lines.push(`${section('💳', 'Deudas')}\n`);
+    lines.push(bullet('Deuda Total', formatCoins(totalDebt)));
+    if (hasOverdueLoan) {
+      lines.push(`⚠️ ${italic('¡Préstamo vencido! Estás en Infocorp')}`);
+    }
+    lines.push(`💡 ${italic('Tus ingresos pagan la deuda automáticamente')}`);
+  } else {
+    lines.push('');
+    lines.push(`✅ ${italic('Sin deudas pendientes')}`);
   }
 
   // Formatear cumpleaños correctamente
