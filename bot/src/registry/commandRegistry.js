@@ -47,6 +47,7 @@ import { pptCommand } from '../commands/games/ppt.js';
 import { statsCommand } from '../commands/games/stats.js';
 import { alertsCommand } from '../commands/moderation/alerts.js';
 import { shipCommand } from '../commands/social/ship.js';
+import { maricometroCommand } from '../commands/social/maricometro.js';
 
 /**
  * Permission levels:
@@ -114,6 +115,7 @@ const commands = [
 
   // ─── Social ─────────────────────────────────────────────────────────────────
   { name: 'ship', aliases: [], category: 'social', permission: 'all', handler: shipCommand },
+  { name: 'maricometro', aliases: ['mariposometro'], category: 'social', permission: 'all', handler: maricometroCommand },
 ];
 
 // Build lookup map (name + all aliases)

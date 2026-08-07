@@ -289,4 +289,14 @@ export const commandHelp = {
       '!ship (para ver las instrucciones)',
     ],
   },
+
+  maricometro: {
+    description: '🌈 Calcula el nivel gay de un usuario de forma humorística. Solo por diversión, no representa orientaciones reales.',
+    usage: '!maricometro @usuario\n!mariposometro @usuario (alias)',
+    examples: [
+      '!maricometro @Juan',
+      '!mariposometro @Pedro',
+      '!maricometro (para ver las instrucciones)',
+    ],
+  },
 };
