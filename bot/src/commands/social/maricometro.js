@@ -8,7 +8,7 @@ const MARICOMETRO_COST = 1;
 const MARICOMETRO_MESSAGES = {
   // 0% - 10%: Muy hetero
   low: [
-    '100% Macho pecho peludo, lomo plateado, que se respeta. 💪🦍',
+    '100% Macho pecho peludo,💪 lomo plateado, que se respeta. 🦍',
     'Más hetero imposible. Alpha total. 🔥👑',
     'Testosterona pura. Cero pluma detectada. 💉🚫',
     'Macho alfa. Ni una señal sospechosa. 🦁⚡',
@@ -17,7 +17,7 @@ const MARICOMETRO_MESSAGES = {
     '0 indicios. Puro macho. 🥩🔨',
     'Hetero certificado. Sin duda alguna. ✅📜',
     'Ni un poquito. Totalmente heterosexual. 🚹💯',
-    'Macho recio. Pluma: inexistente. 🪨🚫🪶',
+    'Macho recio mi King color Kong 🦍',
   ],
 
   // 11% - 40%: Un poco dudoso
@@ -25,9 +25,9 @@ const MARICOMETRO_MESSAGES = {
     'Mmm... medio dudoso, pero pasable. 🤨👀',
     'Se le nota un toquecito, pero tranqui. 😬✋',
     'Algo sospechoso, pero nada confirmado. 🕵️‍♂️❓',
-    'Un pelín de pluma, casi imperceptible. 🪶🔍',
-    'Ligeramente cuestionable... pero bueno. 😅🤷',
-    'Se le escapa un amague nomás. 👁️💨',
+    'Mmm... no sé, se le ve un poquito raro. 🤔🧐',
+    'Ligeramente cuestionable... pero bueno. 🤷',
+    'Medio amanerado pero no del todo. 🤏💅',
     'Dudoso level bajo. Aún hay esperanza. 🙏😰',
     'Apenas y se nota. Casi hetero. 😐👌',
     'Un toque de sensibilidad extra... sospechoso. 🎭🤔',
@@ -37,9 +37,9 @@ const MARICOMETRO_MESSAGES = {
   // 41% - 70%: Bastante obvio
   medium_high: [
     '¡Cuidado! Medio rosquete el muchacho. ⚠️🍩',
-    'Ya se nota bastante. Pluma detectada. 🪶📡',
-    'Alerta: Nivel considerable de fabulosidad. 🚨✨',
-    'Uy, aquí hay tela que cortar... 🧵✂️👀',
+    'Ya se nota bastante. Ya no hay vuelta atrás. 🏳️‍🌈🚪',
+    'Alerta: Ya ni quiere disimular. 🚨👀',
+    'Uy, ya no hay forma de negarlo. 🌈 🪶',
     'Se le ve el plumerito ya. 🪶👁️',
     'Medio obvio la verdad. 👀💅',
     'Se está notando mucho, bebita. 💁‍♀️🌈',
@@ -51,7 +51,7 @@ const MARICOMETRO_MESSAGES = {
   // 71% - 90%: Muy gay
   high: [
     '¡Peligro! Casi casi Bebita. 🚨👶💅',
-    'Alerta roja: Pluma nivel avanzado. 🚨🪶📈',
+    'Alerta: Se le nota demasiado. 🌈🦄',
     'Ya es muy obvio. Solo falta la confirmación. 📢✅',
     'Se le sale la pluma por todos lados. 🪶💨🌪️',
     'Bebita en formación. Casi completo. 👶✨🌈',
@@ -65,15 +65,13 @@ const MARICOMETRO_MESSAGES = {
   // 91% - 100%: 100% Gay
   ultra: [
     '¡100% Cabrazo!!! Se te recontra quemó el arroz, bebita. 💅🔥🍚',
-    'Mariconazo!! Mucha pluma por aquí, se te chorrea el helado. 🦩🍦💧',
-    '¡SÚPER GAY! Ya salió del armario completo. 🏳️‍🌈🚪✨',
+    'Mariconazo!! Hasta participa en desfiles del orgullo. 🏳️‍🌈🎉💃',
+    '¡SÚPER GAY! Ya salió a la luz. No hay vuelta atrás. 🌈🚨',
     'Bebita confirmada. Pluma nivel experto. ✨💅🪶',
-    '100% Fabuloso. Orgullo al máximo. 🌈👑💯',
+    '100% Fabuloso. Hasta orgulloso es. 🌈💎💃',
     'Se te quemó el arroz, se te cayó el helado, se te perdió todo bebita. 🍚🔥🍦💔',
-    'Pluma certificada. Gay de closet nunca más. 🪶✅🚫🚪',
-    'Demasiada pluma. Es oficialmente un pavo real. 🦚🪶✨',
-    'Se le sale el brillo por los poros. 100% gay. ✨💎🌈',
-    'Nivel: Icono LGBT. Sin retorno posible. 💅✨🏳️‍🌈',
+    'Saauuu! Ya no le importa nada.  🪶🌍💅',
+    'Demasiada pluma. Es oficialmente una diva. 💅👑🌈',
   ],
 };
 
