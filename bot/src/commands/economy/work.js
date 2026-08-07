@@ -23,6 +23,16 @@ const WORK_COOLDOWN_MESSAGES = [
   '🎮 Relájate un rato. Vuelve al trabajo en *{time}*.',
   '☕ Break time! Vuelve en *{time}*.',
   '🌙 Necesitas dormir. Despierta en *{time}*.',
+  '🚶 Sal a caminar. Regresa fresquito en *{time}*.',
+  '🎵 Pon música y relájate. Vuelve en *{time}*.',
+  '🍔 Tu estómago gruñe. Come algo y vuelve en *{time}*.',
+  '🧘 Medita un poco. Vuelve renovado en *{time}*.',
+  '😎 Demasiado cool para trabajar ahora. Espera *{time}*.',
+  '🏃 Haz ejercicio y regresa en *{time}* con más energía.',
+  '📱 Revisa tus redes sociales. Vuelve en *{time}*.',
+  '🎬 Ve una serie. Siguiente turno en *{time}*.',
+  '🛌 Recarga baterías. Vuelve en *{time}*.',
+  '💪 Estás en modo ahorro de energía. Reactiva en *{time}*.',
 ];
 
 function getRandomCooldownMessage(timeText) {
