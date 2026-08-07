@@ -2,7 +2,7 @@ import { getMember } from '../../firebase/firebaseClient.js';
 import { deductCashOrBank } from '../../services/economyService.js';
 import { formatCoins, cleanJidForDisplay, randomInt } from '../../utils/helpers.js';
 
-const MARICOMETRO_COST = 1;
+const MARICOMETRO_COST = 5;
 
 // Mensajes de resultados según rangos con múltiples opciones aleatorias
 const MARICOMETRO_MESSAGES = {
@@ -213,12 +213,4 @@ export async function maricometroCommand(sock, msg, context) {
     mentions: [targetJid],
     edit: loadingMsg.key,
   });
-
-  // Mostrar detalles del pago si se usó banco
-  if (payment.fromBank > 0) {
-    const paymentDetails = `💰 Pagaste ${formatCoins(payment.fromCash)} de efectivo + ${formatCoins(payment.fromBank)} del banco`;
-    await sock.sendMessage(remoteJid, {
-      text: paymentDetails,
-    });
-  }
 }

@@ -177,12 +177,4 @@ export async function shipCommand(sock, msg, context) {
     mentions: [user1Jid, user2Jid],
     edit: loadingMsg.key,
   });
-
-  // Mostrar detalles del pago si se usó banco
-  if (payment.fromBank > 0) {
-    const paymentDetails = `\n\n💰 Pagaste ${formatCoins(payment.fromCash)} de efectivo + ${formatCoins(payment.fromBank)} del banco`;
-    await sock.sendMessage(remoteJid, {
-      text: paymentDetails,
-    });
-  }
 }
