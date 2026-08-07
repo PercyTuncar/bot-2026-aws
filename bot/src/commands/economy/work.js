@@ -9,6 +9,27 @@ import {
 import { creditCash, getActiveItem, setCooldown } from '../../services/economyService.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
+// Mensajes divertidos de cooldown para !work
+const WORK_COOLDOWN_MESSAGES = [
+  '😴 Estás agotado. Descansa *{time}* antes de volver a trabajar.',
+  '💤 Necesitas un descanso. Vuelve en *{time}*.',
+  '🛋️ Tómate un café. Regresa en *{time}*.',
+  '🥱 Demasiado trabajo te agota. Espera *{time}*.',
+  '😪 Tu jefe dice: "Vuelve en *{time}*, te ves terrible".',
+  '🏖️ Es hora de descansar. Vuelve en *{time}*.',
+  '⏰ Turno terminado. Siguiente disponible en *{time}*.',
+  '🍕 Ve a comer algo. Regresa en *{time}*.',
+  '😵 Estás exhausto. Necesitas *{time}* para recuperarte.',
+  '🎮 Relájate un rato. Vuelve al trabajo en *{time}*.',
+  '☕ Break time! Vuelve en *{time}*.',
+  '🌙 Necesitas dormir. Despierta en *{time}*.',
+];
+
+function getRandomCooldownMessage(timeText) {
+  const template = WORK_COOLDOWN_MESSAGES[randomInt(0, WORK_COOLDOWN_MESSAGES.length - 1)];
+  return template.replace('{time}', timeText);
+}
+
 export async function workCommand(sock, msg, context) {
   const { senderJid, groupJid } = context;
   const remoteJid = msg.key.remoteJid;
@@ -22,8 +43,9 @@ export async function workCommand(sock, msg, context) {
 
   if (!isCooldownExpired(expiresAt)) {
     const { text } = getCooldownRemaining(expiresAt);
+    const cooldownMessage = getRandomCooldownMessage(text);
     await enqueueMessage(remoteJid,
-      { text: `⏳ Estás cansado. Espera *${text}* para volver a trabajar.` },
+      { text: cooldownMessage },
       { quoted: msg }, 1);
     return;
   }
