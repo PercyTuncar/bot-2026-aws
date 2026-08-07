@@ -4,6 +4,8 @@ import { spinRoulette, resolveRouletteBet } from '../../services/gamesService.js
 import { addGameResult } from '../../firebase/firebaseClient.js';
 import { formatCoins } from '../../utils/helpers.js';
 
+const ROULETTE_IMAGE_URL = 'https://res.cloudinary.com/amadodedios/image/upload/v1786116926/casino-imagen_nuhzn6.jpg';
+
 const HELP_TEXT = `🎡 *Ruleta — Cómo Jugar*
 
 *Tipos de apuesta:*
@@ -60,9 +62,10 @@ export async function rouletteCommand(sock, msg, context) {
 
   await deductCash(groupJid, senderJid, bet);
 
-  // Spin animation
+  // Spin animation con imagen
   const spinMsg = await sock.sendMessage(remoteJid, {
-    text: `🎡 *Ruleta girando...*\n\n🔄 La bola rueda...`,
+    image: { url: ROULETTE_IMAGE_URL },
+    caption: `🎡 *Ruleta girando...*\n\n🔄 La bola rueda...`,
   }, { quoted: msg });
 
   await new Promise((r) => setTimeout(r, 2500));
@@ -84,7 +87,8 @@ export async function rouletteCommand(sock, msg, context) {
   const colorEmoji = result.color === 'rojo' ? '🔴' : result.color === 'negro' ? '⚫' : '🟢';
 
   await sock.sendMessage(remoteJid, {
-    text: `🎡 *Ruleta*\n\n${colorEmoji} Número: *${result.number}* (${result.color})\nPar/Impar: *${result.isEven ? 'Par' : 'Impar'}*\n\n${win ? `🎉 *¡Ganaste!* x${multiplier} → *${formatCoins(prize)}*` : `😞 *Perdiste.* Perdiste *${formatCoins(bet)}*`}\n\n💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
+    image: { url: ROULETTE_IMAGE_URL },
+    caption: `🎡 *Ruleta*\n\n${colorEmoji} Número: *${result.number}* (${result.color})\nPar/Impar: *${result.isEven ? 'Par' : 'Impar'}*\n\n${win ? `🎉 *¡Ganaste!* x${multiplier} → *${formatCoins(prize)}*` : `😞 *Perdiste.* Perdiste *${formatCoins(bet)}*`}\n\n💵 Tu efectivo: *${formatCoins(updated?.cash || 0)}*`,
     edit: spinMsg.key,
   });
 }
