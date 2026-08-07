@@ -1,5 +1,6 @@
 import { getMember, upsertMember } from '../../firebase/firebaseClient.js';
 import { formatCoins } from '../../utils/helpers.js';
+import { creditCash } from '../../services/economyService.js';
 import { enqueueMessage } from '../../queue/sendQueue.js';
 
 export async function withdrawCommand(sock, msg, context) {
@@ -34,9 +35,20 @@ export async function withdrawCommand(sock, msg, context) {
     return;
   }
 
-  await upsertMember(groupJid, senderJid, { cash: Math.round(cash + amount), bank: Math.round(bank - amount) });
+  // Primero descontar del banco
+  await upsertMember(groupJid, senderJid, { bank: Math.round(bank - amount) });
 
-  await enqueueMessage(remoteJid, {
-    text: `💵 *Retiro exitoso*\n\n> Retiraste *${formatCoins(amount)}* del banco\n• 💵 Efectivo: *${formatCoins(cash + amount)}*\n• 🏦 Banco: *${formatCoins(bank - amount)}*`,
-  }, { quoted: msg }, 1);
+  // Luego acreditar al efectivo (paga deudas automáticamente)
+  const { credited, debtPaid } = await creditCash(groupJid, senderJid, amount);
+
+  const updated = await getMember(groupJid, senderJid);
+
+  let text = `💵 *Retiro exitoso*\n\n> Retiraste *${formatCoins(amount)}* del banco`;
+  if (debtPaid > 0) {
+    text += `\n> 💸 Se descontaron *${formatCoins(debtPaid)}* de tu deuda`;
+  }
+  text += `\n\n• 💵 Efectivo: *${formatCoins(updated?.cash || 0)}*`;
+  text += `\n• 🏦 Banco: *${formatCoins(updated?.bank || 0)}*`;
+
+  await enqueueMessage(remoteJid, { text }, { quoted: msg }, 1);
 }
