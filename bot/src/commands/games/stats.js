@@ -28,16 +28,45 @@ export async function statsCommand(sock, msg, context) {
 
   if (gameType === 'roulette') {
     const colorCount = { rojo: 0, negro: 0, verde: 0 };
+    const parImparCount = { par: 0, impar: 0, cero: 0 };
+    const altoBajoCount = { bajo: 0, alto: 0, cero: 0 };
+
     for (const r of history) {
       const d = r.result;
+      const num = d.number;
       const colorEmoji = d.color === 'rojo' ? '🔴' : d.color === 'negro' ? '⚫' : '🟢';
-      const date = r.createdAt?.toDate
-        ? r.createdAt.toDate().toLocaleString('es-PE', { timeZone: 'America/Lima' })
-        : 'Desconocido';
-      text += `${colorEmoji} *${d.number}* ${d.color} — ${date}\n`;
+
+      // Determinar par/impar
+      let parImpar = '';
+      if (num === 0) {
+        parImpar = '⭕';
+        parImparCount.cero++;
+        altoBajoCount.cero++;
+      } else {
+        if (num % 2 === 0) {
+          parImpar = '🟦 Par';
+          parImparCount.par++;
+        } else {
+          parImpar = '🟨 Impar';
+          parImparCount.impar++;
+        }
+
+        // Alto/Bajo
+        if (num >= 1 && num <= 18) {
+          altoBajoCount.bajo++;
+        } else {
+          altoBajoCount.alto++;
+        }
+      }
+
+      text += `${colorEmoji} *${num}* ${parImpar}\n`;
       if (d.color) colorCount[d.color] = (colorCount[d.color] || 0) + 1;
     }
-    text += `\n🔴 Rojos: ${colorCount.rojo} | ⚫ Negros: ${colorCount.negro} | 🟢 Verdes: ${colorCount.verde}`;
+
+    text += `\n━━━━━━━━━━━━━━━━━━━━━━\n`;
+    text += `🔴 Rojos: ${colorCount.rojo} | ⚫ Negros: ${colorCount.negro} | 🟢 Ceros: ${colorCount.verde}\n`;
+    text += `🟦 Pares: ${parImparCount.par} | 🟨 Impares: ${parImparCount.impar}\n`;
+    text += `🔽 Bajos (1-18): ${altoBajoCount.bajo} | 🔼 Altos (19-36): ${altoBajoCount.alto}`;
   } else {
     for (const r of history) {
       const d = r.result;
