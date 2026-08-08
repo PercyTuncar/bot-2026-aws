@@ -62,8 +62,25 @@ export async function workCommand(sock, msg, context) {
 
   // Ganancias base: 3-5 RC
   const baseEarnings = randomInt(3, 5);
-  const hasMultiplier = !!getActiveItem(member, 'multiplier');
-  const earnings = hasMultiplier ? baseEarnings * 2 : baseEarnings;
+
+  // Buscar multiplicador activo (puede ser 2x, 3x, 4x o 5x)
+  const activeMultiplier = member?.inventory?.find((i) =>
+    i.itemId?.startsWith('multiplier') && i.active && (!i.expiresAt || i.expiresAt > Date.now())
+  );
+
+  let multiplierValue = 1;
+  let multiplierName = '';
+
+  if (activeMultiplier) {
+    // Extraer el valor del multiplicador del itemId (multiplier2x -> 2, multiplier5x -> 5)
+    const match = activeMultiplier.itemId.match(/multiplier(\d+)x/);
+    if (match) {
+      multiplierValue = parseInt(match[1], 10);
+      multiplierName = `x${multiplierValue}`;
+    }
+  }
+
+  const earnings = baseEarnings * multiplierValue;
 
   const phrase = WORK_PHRASES[randomInt(0, WORK_PHRASES.length - 1)];
 
@@ -77,7 +94,9 @@ export async function workCommand(sock, msg, context) {
   const updated = await getMember(groupJid, senderJid);
 
   let text = `💼 _${phrase}_ ${formatCoins(earnings)}`;
-  if (hasMultiplier) text += `\n> 💎 Multiplicador x2 activo`;
+  if (multiplierValue > 1) {
+    text += `\n> 💎 Multiplicador ${multiplierName} activo (${formatCoins(baseEarnings)} x ${multiplierValue} = ${formatCoins(earnings)})`;
+  }
   if (debtPaid > 0) text += `\n> 💸 Se descontaron *${formatCoins(debtPaid)}* de tu deuda.`;
   text += `\n\n• 💵 Efectivo: *${formatCoins(updated?.cash || 0)}*`;
 

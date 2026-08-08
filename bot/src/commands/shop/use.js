@@ -9,13 +9,29 @@ export async function useCommand(sock, msg, context) {
   const itemId = args[0]?.toLowerCase();
   if (!itemId) {
     await sock.sendMessage(remoteJid, {
-      text: '❌ Uso: *!use [id del artículo]*\nUsa *!inventory* para ver tus artículos.',
+      text: '❌ Uso: *!use [id del artículo]*\nUsa *!inventory* para ver tus artículos.\n\nEjemplos:\n• `!use multiplier2x`\n• `!use multiplier5x`\n• `!use shield`',
     }, { quoted: msg });
     return;
   }
 
   const member = memberData || await getMember(groupJid, senderJid);
   const inventory = [...(member?.inventory || [])];
+
+  // Check if trying to activate a multiplier
+  const isMultiplier = itemId.startsWith('multiplier');
+
+  if (isMultiplier) {
+    // Deactivate any currently active multiplier first
+    const activeMultiplierIndex = inventory.findIndex((i) =>
+      i.itemId?.startsWith('multiplier') && i.active
+    );
+
+    if (activeMultiplierIndex !== -1) {
+      inventory[activeMultiplierIndex].active = false;
+      inventory[activeMultiplierIndex].expiresAt = null;
+    }
+  }
+
   const itemIndex = inventory.findIndex((i) => i.itemId === itemId && !i.active && !i.permanent);
 
   // For permanent items, check if they exist
@@ -50,9 +66,17 @@ export async function useCommand(sock, msg, context) {
     await upsertMember(groupJid, senderJid, { inventory });
 
     const hrs = shopItem.duration / (1000 * 60 * 60);
-    await sock.sendMessage(remoteJid, {
-      text: `✅ *${shopItem.name} activado*\nDuración: *${hrs}h*\nExpira en ${hrs} horas.`,
-    }, { quoted: msg });
+
+    // Special message for multipliers
+    if (shopItem.multiplier) {
+      await sock.sendMessage(remoteJid, {
+        text: `✅ *${shopItem.name} activado*\n\n💰 Tus ganancias de !work se multiplicarán por *${shopItem.multiplier}x*\n⏰ Duración: *${hrs}h*\n\n_Si tienes otros multiplicadores, este reemplazó al anterior._`,
+      }, { quoted: msg });
+    } else {
+      await sock.sendMessage(remoteJid, {
+        text: `✅ *${shopItem.name} activado*\nDuración: *${hrs}h*\nExpira en ${hrs} horas.`,
+      }, { quoted: msg });
+    }
     return;
   }
 
