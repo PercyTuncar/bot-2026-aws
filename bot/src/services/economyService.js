@@ -72,11 +72,38 @@ export async function transferCash(groupJid, fromJid, toJid, amount) {
   const from = await getMember(groupJid, fromJid);
   if (!from) return { success: false, reason: 'Remitente no encontrado.' };
   const amt = Math.round(amount);
-  if ((from.cash || 0) < amt) return { success: false, reason: 'Saldo insuficiente.' };
 
-  await upsertMember(groupJid, fromJid, { cash: Math.round((from.cash || 0) - amt) });
-  await creditCash(groupJid, toJid, amt);
-  return { success: true };
+  const cash = from.cash || 0;
+  const bank = from.bank || 0;
+  const total = cash + bank;
+
+  if (total < amt) {
+    return { success: false, reason: `Saldo insuficiente. Tienes ${formatCoins(cash)} en efectivo + ${formatCoins(bank)} en banco = ${formatCoins(total)} total.` };
+  }
+
+  // Deducir: primero de efectivo, luego del banco
+  let fromCash = 0;
+  let fromBank = 0;
+
+  if (cash >= amt) {
+    fromCash = amt;
+  } else {
+    fromCash = cash;
+    fromBank = amt - cash;
+  }
+
+  await upsertMember(groupJid, fromJid, {
+    cash: Math.round(cash - fromCash),
+    bank: Math.round(bank - fromBank),
+  });
+
+  // Depositar directamente al banco del destinatario
+  const to = await getMember(groupJid, toJid);
+  await upsertMember(groupJid, toJid, {
+    bank: Math.round((to?.bank || 0) + amt),
+  });
+
+  return { success: true, fromCash, fromBank };
 }
 
 /**

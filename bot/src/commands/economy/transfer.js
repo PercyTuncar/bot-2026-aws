@@ -29,8 +29,15 @@ export async function transferCommand(sock, msg, context) {
   }
 
   const sender = await getMember(groupJid, senderJid);
+  const receiver = await getMember(groupJid, targetJid);
+
+  let paymentInfo = '';
+  if (result.fromBank > 0) {
+    paymentInfo = `\n\n💳 Deducido: ${formatCoins(result.fromCash)} de efectivo + ${formatCoins(result.fromBank)} del banco`;
+  }
+
   await enqueueMessage(remoteJid, {
-    text: `💸 *Transferencia exitosa*\n\n> Enviaste *${formatCoins(amount)}* a @${cleanJidForDisplay(targetJid)}\n• 💵 Tu efectivo: *${formatCoins(sender?.cash || 0)}*`,
+    text: `💸 *Transferencia exitosa*\n\n> Enviaste ${formatCoins(amount)} a @${cleanJidForDisplay(targetJid)}\n> El dinero fue depositado directo a su banco${paymentInfo}\n\n📊 *Tu saldo actual:*\n• 💵 Efectivo: ${formatCoins(sender?.cash || 0)}\n• 🏦 Banco: ${formatCoins(sender?.bank || 0)}`,
     mentions: [targetJid],
   }, { quoted: msg }, 1);
 }
