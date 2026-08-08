@@ -78,13 +78,56 @@ export async function statsCommand(sock, msg, context) {
     text += `📍 *Mitades (1-18 / 19-36):*\n`;
     text += `   1ra Mitad: ${altoBajoCount.bajo} | 2da Mitad: ${altoBajoCount.alto}`;
   } else {
+    // FStudio stats con formato mejorado
+    const resultCount = { home: 0, away: 0, empate: 0 };
+    const homeWins = [];
+    const awayWins = [];
+    const empates = [];
+
+    let index = 1;
     for (const r of history) {
       const d = r.result;
       const resultEmoji = d.result === 'home' ? '🏠' : d.result === 'away' ? '✈️' : '🤝';
-      const date = r.createdAt?.toDate
-        ? r.createdAt.toDate().toLocaleString('es-PE', { timeZone: 'America/Lima' })
-        : 'Desconocido';
-      text += `${resultEmoji} Home: *${d.homeCard}* vs Away: *${d.awayCard}* — ${date}\n`;
+      const resultText = d.result === 'home' ? 'Home' : d.result === 'away' ? 'Away' : 'Empate';
+
+      // Marcar el más reciente
+      const recent = index === 1 ? ' ⬅️ *Último*' : '';
+
+      text += `${index}. ${resultEmoji} *${resultText}* • Home: ${d.homeCard} vs Away: ${d.awayCard}${recent}\n`;
+
+      // Contar resultados
+      if (d.result === 'home') {
+        resultCount.home++;
+        homeWins.push(d.homeCard);
+      } else if (d.result === 'away') {
+        resultCount.away++;
+        awayWins.push(d.awayCard);
+      } else {
+        resultCount.empate++;
+        empates.push(`${d.homeCard}-${d.awayCard}`);
+      }
+
+      index++;
+    }
+
+    text += `\n━━━━━━━━━━━━━━━━━━━━━━\n`;
+    text += `📊 *RESUMEN DE TENDENCIAS:*\n\n`;
+    text += `🎯 *Resultados:*\n`;
+    text += `   🏠 Home: ${resultCount.home} | ✈️ Away: ${resultCount.away} | 🤝 Empates: ${resultCount.empate}\n\n`;
+
+    // Mostrar las cartas ganadoras más frecuentes
+    if (homeWins.length > 0) {
+      const homeCardCount = {};
+      homeWins.forEach(card => homeCardCount[card] = (homeCardCount[card] || 0) + 1);
+      const topHomeCard = Object.entries(homeCardCount).sort((a, b) => b[1] - a[1])[0];
+      text += `🏠 *Carta Home más ganadora:* ${topHomeCard[0]} (${topHomeCard[1]} veces)\n`;
+    }
+
+    if (awayWins.length > 0) {
+      const awayCardCount = {};
+      awayWins.forEach(card => awayCardCount[card] = (awayCardCount[card] || 0) + 1);
+      const topAwayCard = Object.entries(awayCardCount).sort((a, b) => b[1] - a[1])[0];
+      text += `✈️ *Carta Away más ganadora:* ${topAwayCard[0]} (${topAwayCard[1]} veces)`;
     }
   }
 
