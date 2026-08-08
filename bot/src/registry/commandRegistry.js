@@ -89,7 +89,7 @@ const commands = [
   { name: 'balance', aliases: ['wallet', 'bal'], category: 'economy', permission: 'all', handler: balanceCommand },
   { name: 'bank', aliases: [], category: 'economy', permission: 'all', handler: bankCommand },
   { name: 'deposit', aliases: ['dep'], category: 'economy', permission: 'all', handler: depositCommand },
-  { name: 'withdraw', aliases: ['with'], category: 'economy', permission: 'all', handler: withdrawCommand },
+  { name: 'withdraw', aliases: ['with', 'retirar'], category: 'economy', permission: 'all', handler: withdrawCommand },
   { name: 'transfer', aliases: ['yapear', 'yape'], category: 'economy', permission: 'all', handler: transferCommand },
   { name: 'rob', aliases: ['robar'], category: 'economy', permission: 'all', handler: robCommand },
   { name: 'crime', aliases: ['crimen'], category: 'economy', permission: 'all', handler: crimeCommand },
