@@ -109,9 +109,9 @@ export const commandHelp = {
   },
 
   top: {
-    description: 'Muestra el ranking de usuarios más ricos del grupo.',
-    usage: '!top',
-    examples: ['!top', '!ranking'],
+    description: 'Muestra el ranking de usuarios más ricos del grupo. Puedes ver el top por efectivo, banco o total.',
+    usage: '!top [cash|bank|total]',
+    examples: ['!top', '!top cash', '!top bank', '!top total'],
   },
 
   topdebt: {
