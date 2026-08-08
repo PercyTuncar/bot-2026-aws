@@ -31,6 +31,7 @@ export async function statsCommand(sock, msg, context) {
     const parImparCount = { par: 0, impar: 0, cero: 0 };
     const altoBajoCount = { bajo: 0, alto: 0, cero: 0 };
 
+    let index = 1;
     for (const r of history) {
       const d = r.result;
       const num = d.number;
@@ -39,34 +40,43 @@ export async function statsCommand(sock, msg, context) {
       // Determinar par/impar
       let parImpar = '';
       if (num === 0) {
-        parImpar = '⭕';
+        parImpar = '';
         parImparCount.cero++;
         altoBajoCount.cero++;
       } else {
         if (num % 2 === 0) {
-          parImpar = '🟦 Par';
+          parImpar = ' • Par';
           parImparCount.par++;
         } else {
-          parImpar = '🟨 Impar';
+          parImpar = ' • Impar';
           parImparCount.impar++;
         }
 
-        // Alto/Bajo
+        // Alto/Bajo (mitades)
         if (num >= 1 && num <= 18) {
+          parImpar += ' • 1ra Mitad';
           altoBajoCount.bajo++;
         } else {
+          parImpar += ' • 2da Mitad';
           altoBajoCount.alto++;
         }
       }
 
-      text += `${colorEmoji} *${num}* ${parImpar}\n`;
+      // Marcar el más reciente
+      const recent = index === 1 ? ' ⬅️ *Último*' : '';
+      text += `${index}. ${colorEmoji} *${num}*${parImpar}${recent}\n`;
       if (d.color) colorCount[d.color] = (colorCount[d.color] || 0) + 1;
+      index++;
     }
 
     text += `\n━━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += `🔴 Rojos: ${colorCount.rojo} | ⚫ Negros: ${colorCount.negro} | 🟢 Ceros: ${colorCount.verde}\n`;
-    text += `🟦 Pares: ${parImparCount.par} | 🟨 Impares: ${parImparCount.impar}\n`;
-    text += `🔽 Bajos (1-18): ${altoBajoCount.bajo} | 🔼 Altos (19-36): ${altoBajoCount.alto}`;
+    text += `📊 *RESUMEN DE TENDENCIAS:*\n\n`;
+    text += `🎨 *Colores:*\n`;
+    text += `   🔴 Rojos: ${colorCount.rojo} | ⚫ Negros: ${colorCount.negro} | 🟢 Ceros: ${colorCount.verde}\n\n`;
+    text += `🔢 *Par/Impar:*\n`;
+    text += `   Pares: ${parImparCount.par} | Impares: ${parImparCount.impar}\n\n`;
+    text += `📍 *Mitades (1-18 / 19-36):*\n`;
+    text += `   1ra Mitad: ${altoBajoCount.bajo} | 2da Mitad: ${altoBajoCount.alto}`;
   } else {
     for (const r of history) {
       const d = r.result;
